@@ -40,4 +40,6 @@ while running:
 cam.release()
 disp.close()	
 		
+lower = [0,1,2]
+upper = [3,4,5]
 

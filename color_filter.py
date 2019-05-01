@@ -13,13 +13,13 @@ MIN_KEY = 45
 class filter(object):
 	
 	def __init__(self, lower, upper):
-		self.bounds = {'lower': np.array(lower), 'upper': np.array(upper)}
-		self.change = ('lower',0)
+		self.bounds = np.array([lower, upper])
+		self.change = [0,0]
 		self.delta = 5
 
 	def apply(self, bgr_frame, erode=False, dilate=False):    
 		hsv_frame = cv2.cvtColor(bgr_frame, cv2.COLOR_BGR2HSV)
-		mask = cv2.inRange(hsv_frame, self.bounds['lower'], self.bounds['upper'])
+		mask = cv2.inRange(hsv_frame, self.bounds[0,:], self.bounds[1,:])
 		
 		if erode == True:
 			kernel = np.ones((5,5),np.uint8)
@@ -34,31 +34,15 @@ class filter(object):
 		return(res, mask)		
 		
 	def key_handler(self, key):		
-		if key == H_KEY: 
-			print('Pressed h')
-			if self.change[0] == 'lower':
-				self.change = ('upper', 0)
-			else:
-				self.change = ('lower', 0)
-		if key == S_KEY: 
-			print('Pressed s')
-			if self.change[0] == 'lower':
-				self.change = ('upper', 1)
-			else:
-				self.change = ('lower', 1)
-		if key == V_KEY: 
-			print('Pressed v')
-			if self.change[0] == 'lower':
-				self.change = ('upper', 2)
-			else:
-				self.change = ('lower', 2)		
+		if key == H_KEY: self.change = [1 - self.change[0], 0] 
+		if key == S_KEY: self.change = [1 - self.change[0], 1] 
+		if key == V_KEY: self.change = [1 - self.change[0], 2] 
 		elif key == PLUS_KEY:
-			print('Pressed +') 
-			self.bounds[self.change[0]][self.change[1]] = self.bounds[self.change[0]][self.change[1]] + self.delta 
+			self.bounds[tuple(self.change)] = self.bounds[tuple(self.change)] + self.delta 
 			print(self.bounds)
 		elif key == MIN_KEY:
-			print('Pressed -') 
-			self.bounds[self.change[0]][self.change[1]] = self.bounds[self.change[0]][self.change[1]] - self.delta 
+			self.bounds[tuple(self.change)] = self.bounds[tuple(self.change)] - self.delta 
 			print(self.bounds)
 
  
+
