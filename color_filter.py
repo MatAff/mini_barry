@@ -43,6 +43,20 @@ class filter(object):
 		elif key == MIN_KEY:
 			self.bounds[tuple(self.change)] = self.bounds[tuple(self.change)] - self.delta 
 			print(self.bounds)
+	
+	def get_pos(self, mask, height, stroke=10):
+		sum = 0
+		count = 0
+		width = mask.shape[1]
+		for x in range(width):
+			block_count = np.sum(mask[int(height - stroke / 2): int(height + stroke / 2), x: x+1])
+			sum = sum + block_count * x
+			count = count + block_count
+	
+		if count > 0:
+			return float(sum) / count
+		else:
+			return -1
 
  
 

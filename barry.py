@@ -26,6 +26,10 @@ while running:
 		# Apply filter
 		frame, mask = green_filter.apply(frame, True, False)
 		
+		# Get position
+		print('pos')
+		avg_pos = green_filter.get_pos(mask, 240, 50)
+		
 		# Display
 		key = disp.show(frame)
 		
@@ -39,7 +43,4 @@ while running:
 
 cam.release()
 disp.close()	
-		
-lower = [0,1,2]
-upper = [3,4,5]
 
