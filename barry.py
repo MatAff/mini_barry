@@ -14,7 +14,7 @@ key = ESC_KEY
 cam = camera()
 disp = display()
 
-green_filter = filter([20,50,20], [70,255,255])
+green_filter = filter([20,0,20], [70,255,255])
 
 while running:
 	
@@ -27,7 +27,6 @@ while running:
 		frame, mask = green_filter.apply(frame, True, False)
 		
 		# Get position
-		print('pos')
 		avg_pos = green_filter.get_pos(mask, 240, 50)
 		
 		# Display
