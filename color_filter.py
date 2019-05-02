@@ -7,8 +7,8 @@ import numpy as np
 H_KEY = 104
 S_KEY = 115
 V_KEY = 118
-PLUS_KEY = 43 
-MIN_KEY = 45
+PLUS_KEY = 171 #43 
+MIN_KEY = 173 # 45
 
 class filter(object):
 	
