@@ -10,7 +10,7 @@ V_KEY = 118
 PLUS_KEY = 171 #43 
 MIN_KEY = 173 # 45
 
-class filter(object):
+class Filter(object):
 	
 	def __init__(self, lower, upper):
 		self.bounds = np.array([lower, upper])

@@ -3,7 +3,7 @@
 
 import cv2
 
-class camera(object):
+class Camera(object):
 	
 	def __init__(self):
 		self.vc = cv2.VideoCapture(0)		
@@ -14,7 +14,7 @@ class camera(object):
 	def release(self):
 		self.vc.release()
 
-class display(object):
+class Display(object):
 	 
 	def __init__(self):
 		self.name = "barry"
