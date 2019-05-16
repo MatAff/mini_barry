@@ -35,12 +35,13 @@ while running:
     
     if rval == True:
         
-		# Record
-		rec.write(frame)
-		
+        # Record
+        rec.write(frame)
+        ori_frame = frame
+        
         # Apply filter
         frame, mask = green_filter.apply(frame, True, False)
-		print(frame.shape)
+        print(frame.shape)
         
         # Get position
         avg_pos = green_filter.get_pos(mask, 300, 50)
@@ -56,9 +57,9 @@ while running:
         
         # Handle keys
         if key != -1: 
-			print(key)
-			if key == KEY_P : rec.save_img(frame)
-			green_filter.key_handler(key)
+            print(key)
+            if key == KEY_P : rec.save_img(ori_frame)
+            green_filter.key_handler(key)
         
         # Manual drive
         if key in [KEY_FORWARD, KEY_BACKWARD, KEY_LEFT, KEY_RIGHT] :
