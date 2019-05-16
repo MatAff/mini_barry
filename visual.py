@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import cv2
+import time
 
 class Camera(object):
 	
@@ -27,3 +28,18 @@ class Display(object):
 	
 	def close(self):
 		cv2.destroyWindow(self.name)	
+		
+class Recorder(object):
+	
+	def __init__(self, filename, fps, size):
+		self.out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'DIVX'), fps, size)
+	
+	def write(self, frame):
+		self.out.write(frame)
+		
+	def save_img(self, frame, filename=None):
+		if filename is None : filename = str(time.time()) + '.png'
+		cv2.imwrite(filename, frame)
+		
+	def release(self):
+		self.out.release()

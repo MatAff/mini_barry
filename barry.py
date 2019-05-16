@@ -14,11 +14,14 @@ KEY_BACKWARD = 84
 KEY_LEFT = 81
 KEY_RIGHT = 83
 
+KEY_P = 112
+
 running = True
 key = ESC_KEY
 
 cam = Camera()
 disp = Display()
+rec = Recorder('./barry.avi', 20, (640, 480))
 twist = Twist()
 ada_drive = AdaDrive() # Not available on laptop
 
@@ -32,8 +35,12 @@ while running:
     
     if rval == True:
         
+		# Record
+		rec.write(frame)
+		
         # Apply filter
         frame, mask = green_filter.apply(frame, True, False)
+		print(frame.shape)
         
         # Get position
         avg_pos = green_filter.get_pos(mask, 300, 50)
@@ -48,8 +55,10 @@ while running:
         key = disp.show(frame)
         
         # Handle keys
-        if key != -1: print(key)
-        green_filter.key_handler(key)
+        if key != -1: 
+			print(key)
+			if key == KEY_P : rec.save_img(frame)
+			green_filter.key_handler(key)
         
         # Manual drive
         if key in [KEY_FORWARD, KEY_BACKWARD, KEY_LEFT, KEY_RIGHT] :
@@ -65,5 +74,6 @@ while running:
 
 ada_drive.stop()
 cam.release()
+rec.release()
 disp.close()    
 
