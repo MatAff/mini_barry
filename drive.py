@@ -39,8 +39,15 @@ class AdaDrive(object):
         #self.m2=m2
   
     def set_throttle(self, left, right):
-        self.kit.motor1.throttle = left
-        self.kit.motor2.throttle = right
+		thresh = 50
+        if abs(left)  > thresh : 
+			self.kit.motor1.throttle = left
+		else: 
+			elf.kit.motor1.throttle = 0.0
+        if abs(right) > thresh : 
+			self.kit.motor2.throttle = right
+		else:
+			self.kit.motor2.throttle = 0.0
         
     def drive(self, twist):
         left = twist.forward + twist.rotate

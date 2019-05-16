@@ -26,7 +26,7 @@ twist = Twist()
 ada_drive = AdaDrive() # Not available on laptop
 
 #green_filter = Filter([20,0,20], [70,255,255])
-green_filter = Filter([30, 50, 0], [55, 260, 255]) # Daytime 
+green_filter = Filter([25, 30, 50], [55, 255, 255]) # Daytime 
 
 while running:
     
@@ -44,11 +44,11 @@ while running:
         print(frame.shape)
         
         # Get position
-        avg_pos = green_filter.get_pos(mask, 300, 50)
-        print(avg_pos)
+        pos = green_filter.get_block_pos(mask, 300, 10)
+        print(pos)
 
         # Set drive
-        rotate = (avg_pos - 320.0) / -320.0 * 0.02
+        rotate = pos * 0.02
         print(rotate)
         twist.set_rotate(rotate)
         

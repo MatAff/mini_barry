@@ -44,6 +44,17 @@ class Filter(object):
 			self.bounds[tuple(self.change)] = self.bounds[tuple(self.change)] - self.delta 
 			print(self.bounds)
 	
+	def get_block_pos(self, mask, height, stroke=10):
+		nr_blocks = 11.0
+		block_width = mask.shape[1] / nr_blocks
+		block_counts = np.zeros(nr_blocks)
+		for b in range(nr_blocks):
+			count = np.sum(mask[int(height - stroke / 2): int(height + stroke / 2),
+					      int(b * block_width):int((b + 1) * block_width)])
+			block_counts[b] = count
+		max_b = np.argmax(block_counts)
+		return max_b / nr_blocks * 2.0 - 1.0
+				
 	def get_pos(self, mask, height, stroke=10):
 		sum = 0
 		count = 0
