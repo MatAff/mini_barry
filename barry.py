@@ -40,7 +40,7 @@ while running:
         print(avg_pos)
 
         # Set drive
-        rotate = (avg_pos - 320.0) / -320.0 * 0.1
+        rotate = (avg_pos - 320.0) / -320.0 * 0.02
         print(rotate)
         twist.set_rotate(rotate)
         
