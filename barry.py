@@ -41,15 +41,13 @@ while running:
         
         # Apply filter
         frame, mask = green_filter.apply(frame, True, False)
-        print(frame.shape)
         
         # Get position
-        pos = green_filter.get_block_pos(mask, 300, 10)
-        print(pos)
+        pos = green_filter.get_block_pos(mask, 400, 10)
 
         # Set drive
-        rotate = pos * 0.02
-        print(rotate)
+        rotate = pos * -0.2
+        print('position %.3f, rotate: %.3f' %(pos, rotate))
         twist.set_rotate(rotate)
         
         # Display

@@ -27,8 +27,8 @@ class Twist(object):
     def man(self, key):
         if key == KEY_FORWARD : self.forward += 0.05
         if key == KEY_BACKWARD : self.forward -= 0.05
-        if key == KEY_LEFT : self.rotate += 0.2
-        if key == KEY_RIGHT : self.rotate -= 0.2
+        if key == KEY_LEFT : self.rotate += 0.05
+        if key == KEY_RIGHT : self.rotate -= 0.05
 
 class AdaDrive(object):
 
@@ -39,19 +39,19 @@ class AdaDrive(object):
         #self.m2=m2
   
     def set_throttle(self, left, right):
-		thresh = 50
+        thresh = 0.00
         if abs(left)  > thresh : 
-			self.kit.motor1.throttle = left
-		else: 
-			elf.kit.motor1.throttle = 0.0
+            self.kit.motor1.throttle = left
+        else: 
+            self.kit.motor1.throttle = 0.0
         if abs(right) > thresh : 
-			self.kit.motor2.throttle = right
-		else:
-			self.kit.motor2.throttle = 0.0
+            self.kit.motor2.throttle = right
+        else:
+            self.kit.motor2.throttle = 0.0
         
     def drive(self, twist):
-        left = twist.forward + twist.rotate
-        right = twist.forward - twist.rotate
+        left = twist.forward - twist.rotate
+        right = twist.forward + twist.rotate
         self.set_throttle(left, right)
     
     def stop(self):
