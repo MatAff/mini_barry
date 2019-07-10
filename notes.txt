@@ -1,0 +1,12 @@
+
+
+# Improvements to make
+# Clean motor code
+
+# Display line detection range on screen >> DONE
+# Display information on screen for reference >> DONE
+# Display twist on screen for reference >> DONE
+# Only drive when requested speed reaches thresshold >> DONE
+# Kick start drividng (short boost at higher value) >> DONE (for 1 cycle)
+# Show FPS >> Done
+
