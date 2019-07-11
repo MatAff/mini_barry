@@ -65,7 +65,6 @@ while running:
     # DECIDE - manual drive
     if key in [KEY_FORWARD, KEY_BACKWARD, KEY_LEFT, KEY_RIGHT] :
         twist.man(key)
-        twist.print()
 
 	# ACT - drive
     ada_drive.drive(twist) # Not available on laptop

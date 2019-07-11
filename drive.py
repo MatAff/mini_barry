@@ -22,8 +22,8 @@ class Twist(object):
     def to_string(self):
         return 'Twist: %.2f %.2f' % (self.forward, self.rotate)
 
-    def print(self):
-        print(self.to_string())
+    #def print(self):
+    #    print(self.to_string())
 
     def set(self, forward=0.0, rotate=0.0):
         self.forward = forward
