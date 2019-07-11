@@ -55,7 +55,7 @@ class AdaDrive(object):
         if self.kit is None:
             return
         else:
-	        thresh = 0.30
+	        thresh = 0.15
 			# TODO: move duplicate code to separate function
 	        if abs(left)  > thresh :
 	            if self.kit.motor1.throttle != 0.0:

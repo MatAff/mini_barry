@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#/usr/bin/env python3
 
 from visual import Camera, Display, Recorder, Annotate
 from color_filter import Filter
@@ -25,7 +25,7 @@ key = -1
 cam = Camera()
 disp = Display('Barry')
 rec = Recorder('./barry.avi', 20, (640, 480))
-twist = Twist()
+twist = Twist(forward=0.35)
 ada_drive = AdaDrive()
 fpss = FPS()
 
@@ -44,7 +44,7 @@ while running:
     block_lines = green_filter.get_lines()
 
     # DECIDE - aet drive
-    rotate = pos * -0.2
+    rotate = pos * -0.20
     twist.set_rotate(rotate)
     l = twist.as_line()
 
@@ -55,6 +55,7 @@ while running:
     show_frame = Annotate.add_multiple_lines(show_frame, block_lines, (0, 0, 255))
     show_frame = Annotate.add_text(show_frame, 'position %.3f' % pos, (0, 255, 0), 2)
     show_frame = Annotate.add_text(show_frame, 'rotate: %.3f' % rotate, (0, 255, 0), 3)
+    show_frame = Annotate.add_text(show_frame, twist.to_string(), (0, 255, 0), 4)
     key = disp.show(show_frame)
 
 	# SENSE - handle keys
