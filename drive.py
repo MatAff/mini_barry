@@ -55,7 +55,7 @@ class AdaDrive(object):
         if self.kit is None:
             return
         else:
-	        thresh = 0.15
+	        thresh = 0.0
 			# TODO: move duplicate code to separate function
 	        if abs(left)  > thresh :
 	            if self.kit.motor1.throttle != 0.0:
@@ -73,8 +73,12 @@ class AdaDrive(object):
 	            self.kit.motor2.throttle = 0.0
 
     def drive(self, twist):
-        left = twist.forward - twist.rotate
-        right = twist.forward + twist.rotate
+        if twist.rotate < 0:
+            left = twist.forward - twist.rotate
+            right = twist.forward
+        else:
+            left = twist.forward
+            right = twist.forward + twist.rotate
         self.set_throttle(left, right)
 
     def stop(self):

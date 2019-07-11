@@ -25,7 +25,7 @@ key = -1
 cam = Camera()
 disp = Display('Barry')
 rec = Recorder('./barry.avi', 20, (640, 480))
-twist = Twist(forward=0.35)
+twist = Twist(forward=0.25)
 ada_drive = AdaDrive()
 fpss = FPS()
 
