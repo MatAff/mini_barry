@@ -36,7 +36,7 @@ while running:
 
     # SENSE - get frame
     frame = cam.get()
-    fpss.update()
+    print(fpss.update())
 
     # DECIDE - apply filter and get position
     mask_frame, mask = green_filter.apply(frame, True, False)
