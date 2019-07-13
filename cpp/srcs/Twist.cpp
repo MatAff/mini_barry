@@ -25,6 +25,11 @@ void Twist::set(double forward, double rotate)
     this->rotate = rotate;
 }
 
+void Twist::setForward(double forward)
+{
+    this->forward = forward;
+}
+
 void Twist::setRotate(double rotate)
 {
     this->rotate = rotate;

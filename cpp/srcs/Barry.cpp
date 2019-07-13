@@ -31,7 +31,7 @@ int main(int argc,char ** argv)
 
     Camera cam;
     FPS fps(1000);
-    Twist twist(0.25, 0.00);
+    Twist twist(1.00, 0.00);
     Tank tank = Tank();
 
     Filter greenFilter = Filter(cv::Scalar(25, 30, 50), cv::Scalar(55, 255, 255));
@@ -68,6 +68,7 @@ std::cout << fps.getString() << std::endl;
         int intDirection = (int) twist.getRotate() * 255;
         tank.setSpeed(intSpeed);
         tank.setDirection(intDirection);
+        twist.setForward(0.35);
        
         // show
         //imshow("Live", dispFrame);
