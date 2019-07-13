@@ -8,28 +8,38 @@
 #include "Camera.h"
 #include "FPS.h"
 #include "Annotate.h"
-
+#include "Filter.h"
+#include "Twist.h"
+#include "Tank.h"
 //#include "Recorder.h"
 
 #define KEY_ESC 27
+
 
 // Exits program on detection of Ctrl+C (SIGINT)
 //void ctrl_c_handler(int s){
 //    std::cout << "Caught signal " << s << std::endl;
 //}
 
-Camera cam;
-FPS fps = FPS(1000);
-
-// Main program
+// main program
 int main(int argc,char ** argv)
 {
 //    signal(SIGINT, ctrl_c_handler);
 
+    int SENSE_HEIGHT = 400;
+    int SENSE_WIDTH = 10;
+
+    Camera cam;
+    FPS fps(1000);
+    Twist twist(0.25, 0.00);
+    Tank tank = Tank();
+
+    Filter greenFilter = Filter(cv::Scalar(25, 30, 50), cv::Scalar(55, 255, 255));
+
     cv::Mat frame(cv::Size(640,480), CV_8UC3);
     bool running = true;
 
-    // Main loop
+    // main loop
     while (running)
     {
         // sense
@@ -37,10 +47,29 @@ int main(int argc,char ** argv)
         cam.get(frame);
         fps.update();
 
-        Annotate::addText(frame, fps.getString(), 1);
- 
-        imshow("Live", frame);
+        // filter
+        greenFilter.apply(frame);    
+        cv::Mat maskedFrame = greenFilter.getMasked();
+        double pos = greenFilter.getBlockPos(SENSE_HEIGHT, SENSE_WIDTH);
+        
+        // set twist
+        double rotate = pos * -0.20;
+        twist.setRotate(rotate);
 
+        // annotate
+        cv::Mat& dispFrame = maskedFrame;
+        Annotate::addText(dispFrame, fps.getString(), 1);
+        Annotate::addText(dispFrame, std::to_string(pos), 2);
+        Annotate::addText(dispFrame, twist.toString(), 3);
+       
+        // drive
+        int intSpeed = (int) twist.getForward() * 255;
+        int intDirection = (int) twist.getRotate() * 255;
+        tank.setSpeed(intSpeed);
+        tank.setDirection(intDirection);
+       
+        // show
+        imshow("Live", dispFrame);
         int key = cv::waitKey(5);
 
         if (key==KEY_ESC) {

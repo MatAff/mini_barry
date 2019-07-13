@@ -43,7 +43,7 @@ while running:
     pos = green_filter.get_block_pos(mask, SENSE_HEIGHT, SENSE_WIDTH)
     block_lines = green_filter.get_lines()
 
-    # DECIDE - aet drive
+    # DECIDE - set drive
     rotate = pos * -0.20
     twist.set_rotate(rotate)
     l = twist.as_line()
