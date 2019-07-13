@@ -23,9 +23,9 @@ key = -1
 
 # initialize objects
 cam = Camera()
-disp = Display('Barry')
+#disp = Display('Barry')
 rec = Recorder('./barry.avi', 20, (640, 480))
-twist = Twist(forward=0.25)
+twist = Twist(forward=0.5)
 ada_drive = AdaDrive()
 fpss = FPS()
 
@@ -49,14 +49,15 @@ while running:
     l = twist.as_line()
 
     # SHARE - display
-    show_frame = mask_frame
-    show_frame = Annotate.add_text(show_frame, fpss.to_string(), (0, 255, 0), 1)
-    show_frame = Annotate.add_line(show_frame, l, (0, 255, 0))
-    show_frame = Annotate.add_multiple_lines(show_frame, block_lines, (0, 0, 255))
-    show_frame = Annotate.add_text(show_frame, 'position %.3f' % pos, (0, 255, 0), 2)
-    show_frame = Annotate.add_text(show_frame, 'rotate: %.3f' % rotate, (0, 255, 0), 3)
-    show_frame = Annotate.add_text(show_frame, twist.to_string(), (0, 255, 0), 4)
-    key = disp.show(show_frame)
+    print(fpss.to_string())
+    #show_frame = mask_frame
+    #show_frame = Annotate.add_text(show_frame, fpss.to_string(), (0, 255, 0), 1)
+    #show_frame = Annotate.add_line(show_frame, l, (0, 255, 0))
+    #show_frame = Annotate.add_multiple_lines(show_frame, block_lines, (0, 0, 255))
+    #show_frame = Annotate.add_text(show_frame, 'position %.3f' % pos, (0, 255, 0), 2)
+    #show_frame = Annotate.add_text(show_frame, 'rotate: %.3f' % rotate, (0, 255, 0), 3)
+    #show_frame = Annotate.add_text(show_frame, twist.to_string(), (0, 255, 0), 4)
+    #key = disp.show(show_frame)
 
 	# SENSE - handle keys
     if key != -1:
@@ -68,11 +69,13 @@ while running:
     if key in [KEY_FORWARD, KEY_BACKWARD, KEY_LEFT, KEY_RIGHT] :
         twist.man(key)
 
-	# ACT - drive
+    # ACT - drive
     ada_drive.drive(twist) # Not available on laptop
 
+    twist.set_forward(0.25)    
+
 	# SHARE - record
-    rec.write(show_frame)
+    #rec.write(show_frame)
 
     # check status
     if key == KEY_ESC:
@@ -81,5 +84,5 @@ while running:
 ada_drive.stop()
 cam.release()
 rec.release()
-disp.close()
+#disp.close()
 

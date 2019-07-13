@@ -46,6 +46,7 @@ int main(int argc,char ** argv)
         frame = cv::Scalar(0,0,0);
         cam.get(frame);
         fps.update();
+std::cout << fps.getString() << std::endl;
 
         // filter
         greenFilter.apply(frame);    
@@ -69,12 +70,12 @@ int main(int argc,char ** argv)
         tank.setDirection(intDirection);
        
         // show
-        imshow("Live", dispFrame);
-        int key = cv::waitKey(5);
+        //imshow("Live", dispFrame);
+        //int key = cv::waitKey(5);
 
-        if (key==KEY_ESC) {
-            running = false;
-        }
+        //if (key==KEY_ESC) {
+        //    running = false;
+        //}
    }
 
     return 0;
