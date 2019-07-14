@@ -30,7 +30,8 @@ ada_drive = AdaDrive()
 fpss = FPS()
 
 #green_filter = Filter([20,0,20], [70,255,255])
-green_filter = Filter([25, 30, 50], [55, 255, 255]) # Daytime
+#green_filter = Filter([25, 30, 50], [55, 255, 255]) # Daytime
+green_filter = Filter([30, 50, 100], [65, 200, 160]) # Daytime (improved)
 
 frame_count = 0
 
@@ -74,7 +75,7 @@ while running:
     # ACT - drive
     ada_drive.drive(twist) # Not available on laptop
 
-    twist.set_forward(0.25)    
+    twist.set_forward(0.25)
 
     # SHARE - record
     frame_count += 1
