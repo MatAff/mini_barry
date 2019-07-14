@@ -25,11 +25,11 @@ images = [cv2.imread(file) for file in files]
 # Function to show images
 def picshow(images):
 	num = len(images)
-	ax = np.ceil(np.sqrt(num)) 
-	ay = np.rint(np.sqrt(num)) 
+	ax = np.ceil(np.sqrt(num))
+	ay = np.rint(np.sqrt(num))
 	fig = plt.figure()
 	for i in range(num):
-		sub = fig.add_subplot(ax,ay,i + 1)        
+		sub = fig.add_subplot(ax,ay,i + 1)
 		sub.axis('off')
 		sub.imshow(images[i])
 	#fig.set_size_inches(np.array(fig.get_size_inches())*num)
@@ -40,31 +40,31 @@ def picshow(images):
 #picshow(images)
 #
 ## Initialize filter
-#green_filter = Filter([30, 50, 0], [55, 260, 255]) # Daytime 
+#green_filter = Filter([30, 50, 0], [55, 260, 255]) # Daytime
 #
 ## Initialize alternative filter
-#green_filter = Filter([30, 0, 0], [55, 260, 255]) # Daytime 
+#green_filter = Filter([30, 0, 0], [55, 260, 255]) # Daytime
 #
 ## Process images
 #proc_images = [green_filter.apply(img)[0] for img in images[0:4]]
 #
 ## Show images
 #picshow(proc_images)
-	
+
 ### PLAYGROUND ###
 
 def filt(bgr_frame):
-	
-	# Smooth	
+
+	# Smooth
 	bgr_frame = cv2.GaussianBlur(bgr_frame,(15,15),0)
-	
+
 	# Convert to hsv
 	hsv_frame = cv2.cvtColor(bgr_frame, cv2.COLOR_BGR2HSV)
-	
-	# Smooth		
+
+	# Smooth
 	#kernel = np.ones((5,5),np.float32)/225
 	#hsv_frame = cv2.filter2D(hsv_frame,-1,kernel)
-	
+
 	# hsv filter
 	bounds = np.array([[25, 30, 50], [55, 255, 255]])
 	mask = cv2.inRange(hsv_frame, bounds[0,:], bounds[1,:])
@@ -72,15 +72,15 @@ def filt(bgr_frame):
 	# Erode
 	#kernel = np.ones((5,5),np.uint8)
 	#mask = cv2.erode(mask,kernel,iterations = 1)
-		
+
 	# Dilate
 	#kernel = np.ones((5,5),np.uint8)
 	#mask = cv2.dilate(mask,kernel,iterations = 1)
-		
+
 	bgr_frame = cv2.bitwise_and(bgr_frame, bgr_frame, mask=mask)
-		
-	return(bgr_frame)		
-	
+
+	return(bgr_frame)
+
 proc_images = [filt(img) for img in images]
 
 # Show images
@@ -88,6 +88,11 @@ picshow(proc_images)
 #picshow(images)
 
 
+#_, axs = plt.subplots(n_row, n_col, figsize=(12, 12))
+#axs = axs.flatten()
+#for img, ax in zip(imgs, axs):
+#    ax.imshow(img)
+#    plt.show()
+
 
 #
-	
