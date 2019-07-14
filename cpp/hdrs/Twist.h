@@ -11,6 +11,7 @@ public:
     double getRotate();
     
     void set(double forward, double rotate);
+    void setForward(double forward);
     void setRotate(double rotate);
     
     std::string toString();

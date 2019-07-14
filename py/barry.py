@@ -32,6 +32,8 @@ fpss = FPS()
 #green_filter = Filter([20,0,20], [70,255,255])
 green_filter = Filter([25, 30, 50], [55, 255, 255]) # Daytime
 
+frame_count = 0
+
 while running:
 
     # SENSE - get frame
@@ -50,13 +52,13 @@ while running:
 
     # SHARE - display
     print(fpss.to_string())
-    #show_frame = mask_frame
-    #show_frame = Annotate.add_text(show_frame, fpss.to_string(), (0, 255, 0), 1)
-    #show_frame = Annotate.add_line(show_frame, l, (0, 255, 0))
-    #show_frame = Annotate.add_multiple_lines(show_frame, block_lines, (0, 0, 255))
-    #show_frame = Annotate.add_text(show_frame, 'position %.3f' % pos, (0, 255, 0), 2)
-    #show_frame = Annotate.add_text(show_frame, 'rotate: %.3f' % rotate, (0, 255, 0), 3)
-    #show_frame = Annotate.add_text(show_frame, twist.to_string(), (0, 255, 0), 4)
+    show_frame = frame
+    show_frame = Annotate.add_text(show_frame, fpss.to_string(), (0, 255, 0), 1)
+    show_frame = Annotate.add_line(show_frame, l, (0, 255, 0))
+    show_frame = Annotate.add_multiple_lines(show_frame, block_lines, (0, 0, 255))
+    show_frame = Annotate.add_text(show_frame, 'position %.3f' % pos, (0, 255, 0), 2)
+    show_frame = Annotate.add_text(show_frame, 'rotate: %.3f' % rotate, (0, 255, 0), 3)
+    show_frame = Annotate.add_text(show_frame, twist.to_string(), (0, 255, 0), 4)
     #key = disp.show(show_frame)
 
 	# SENSE - handle keys
@@ -74,8 +76,11 @@ while running:
 
     twist.set_forward(0.25)    
 
-	# SHARE - record
-    #rec.write(show_frame)
+    # SHARE - record
+    frame_count += 1
+    if frame_count == 5:
+        rec.write(show_frame)
+        frame_count = 0
 
     # check status
     if key == KEY_ESC:
