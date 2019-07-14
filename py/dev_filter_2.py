@@ -7,6 +7,9 @@ import os
 import matplotlib.pyplot as plt
 import math
 from color_filter import Filter
+from scipy.stats.mstats_basic import winsorize
+
+KEY_ESC = 27
 
 # steps
 # load possible images
@@ -155,17 +158,66 @@ show_big(mask_frame)
 # mouse exploration
 mouse_explore(img, mask_frame)
 
+### ADVANCED METHOD ###
+
+def mouse_explore(color_img, display_img, l_colors=[], r_colors=[]):
+
+    hsv_frame = cv2.cvtColor(color_img, cv2.COLOR_BGR2HSV)
+
+    def mouse_click(event,x,y,flags,param):
+        if event == cv2.EVENT_LBUTTONDOWN: #checks mouse left button down condition
+            l_colors.append(hsv_frame[y,x])
+        if event == cv2.EVENT_RBUTTONDOWN: #checks mouse left button down condition
+            r_colors.append(hsv_frame[y,x])
+
+    cv2.namedWindow('explore')
+    cv2.setMouseCallback('explore',mouse_click)
+
+    while(1):
+        cv2.imshow('explore',display_img)
+        key = cv2.waitKey(20)
+        if key == KEY_ESC:
+            break
+
+    cv2.destroyAllWindows()
+
+    return l_colors, r_colors
+
+def get_ranges(colors):
+    col_arr = np.vstack(colors)
+    col_arr = winsorize(col_arr, (.05, .05))
+    col_arr = np.array(col_arr)
+    min_hsv = col_arr.min(axis=0)
+    max_hsv = col_arr.max(axis=0)
+    return [min_hsv, max_hsv]
+
+l_colors, r_colors = mouse_explore(img, img)
+
+for i in range(5):
+    green_range = get_ranges(l_colors)
+    green_filter = Filter(*green_range)
+    mask_frame, mask = green_filter.apply(img, False, False)
+    l_colors, r_colors = mouse_explore(img, mask_frame, l_colors, r_colors)
+
+green_range = get_ranges(l_colors)
+green_filter = Filter(*green_range)
+mask_frame, mask = green_filter.apply(img, False, False)
+show_big(mask_frame)
+
+print(green_range)
+print(r_colors)
+
+def find_conflict(green_range, r_colors):
+
+
+green_range[0] - r_colors
+
+r_colors - green_range[1]
 
 
 
-
-
-
-
-
-
-
-
-
+green_filter = Filter([28, 58, 29],[ 90, 198, 198])
+mask_frame, mask = green_filter.apply(img, False, False)
+show_big(mask_frame)
 
 
