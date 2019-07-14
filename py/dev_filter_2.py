@@ -122,7 +122,8 @@ def mouse_explore(image, display_img):
 
 # set file name
 os.listdir('../media')
-filename = '../media/daylight_short.avi'
+#filename = '../media/daylight_short.avi'
+filename = '../media/dim.avi'
 
 # load all images
 img_list = imgs_from_video(filename)
@@ -131,7 +132,7 @@ img_list = imgs_from_video(filename)
 show_numbered_imgs(img_list)
 
 # select images
-select_img_nrs = [0,9, 16, 19, 21, 22, 24, 27, 28]
+select_img_nrs = [0,5, 10, 20, 25, 30, 40, 50, 60]
 print(len(select_img_nrs))
 select_imgs = np.array(img_list)[select_img_nrs]
 print(len(select_imgs))
@@ -145,6 +146,7 @@ show_big(img)
 
 # apply filter
 green_filter = Filter([30, 50, 100], [65, 200, 160]) # Daytime
+green_filter = Filter([35, 50, 30], [85, 200, 160]) # Dim
 mask_frame, mask = green_filter.apply(img, False, False)
 
 # show filtered img

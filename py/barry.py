@@ -31,7 +31,8 @@ fpss = FPS()
 
 #green_filter = Filter([20,0,20], [70,255,255])
 #green_filter = Filter([25, 30, 50], [55, 255, 255]) # Daytime
-green_filter = Filter([30, 50, 100], [65, 200, 160]) # Daytime (improved)
+#green_filter = Filter([30, 50, 100], [65, 200, 160]) # Daytime (improved)
+green_filter = Filter([35, 50, 30], [85, 200, 160]) # Dim
 
 frame_count = 0
 
