@@ -48,7 +48,7 @@ while running:
     block_lines = green_filter.get_lines()
 
     # DECIDE - set drive
-    rotate = pos * -0.20
+    rotate = pos * -0.10
     twist.set_rotate(rotate)
     l = twist.as_line()
 
