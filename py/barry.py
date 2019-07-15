@@ -32,7 +32,8 @@ fpss = FPS()
 #green_filter = Filter([20,0,20], [70,255,255])
 #green_filter = Filter([25, 30, 50], [55, 255, 255]) # Daytime
 #green_filter = Filter([30, 50, 100], [65, 200, 160]) # Daytime (improved)
-green_filter = Filter([35, 50, 30], [85, 200, 160]) # Dim
+#green_filter = Filter([35, 50, 30], [85, 200, 160]) # Dim
+green_filter = Filter([24, 61, 22], [86, 243, 227]) # later afternoon
 
 frame_count = 0
 
@@ -48,13 +49,14 @@ while running:
     block_lines = green_filter.get_lines()
 
     # DECIDE - set drive
-    rotate = pos * -0.10
+    rotate = pos * -0.15
     twist.set_rotate(rotate)
     l = twist.as_line()
 
     # SHARE - display
     print(fpss.to_string())
-    show_frame = frame
+    #show_frame = frame
+    show_frame = mask_frame
     show_frame = Annotate.add_text(show_frame, fpss.to_string(), (0, 255, 0), 1)
     show_frame = Annotate.add_line(show_frame, l, (0, 255, 0))
     show_frame = Annotate.add_multiple_lines(show_frame, block_lines, (0, 0, 255))
