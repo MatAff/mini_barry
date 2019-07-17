@@ -40,7 +40,7 @@ def pull_video_imgs(filename):
     return img_list
 
 def random_imgs(img_list, n=32):
-    size = len(all_imgs)
+    size = len(img_list)
     img_nrs = random.sample(range(size), n)
     return np.array(img_list)[img_nrs]
 
@@ -150,7 +150,10 @@ def click_filter(filename):
 
 ### MAIN ###
 
-filename = '../media/dim.avi'
+#filename = '../media/dim.avi'
+#filename = '../media/late_afternoon.avi'
+#filename = '../media/late_afternoon2.avi'
+filename = '../media/late_afternoon_3.avi'
 
 values = click_filter(filename)
 print(values)

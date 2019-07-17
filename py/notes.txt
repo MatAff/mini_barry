@@ -1,8 +1,19 @@
 
-
 # Improvements to make
+# update code so that barry.py runs again
+# get better surface
+# test
+# make rl code more general
+# don't forget not to run from video for testing
+# more granular block detection
+# return None for missing (display cross)
+# code clean up
+# use arguments to swith on/off display
 # Clean motor code
 
+# make it possible to run from video >> DONE
+# Add frame counter >> DONE
+# Record every fifth frame >> DONE
 # Display line detection range on screen >> DONE
 # Display information on screen for reference >> DONE
 # Display twist on screen for reference >> DONE

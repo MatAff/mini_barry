@@ -44,24 +44,28 @@ class Filter(object):
             self.bounds[tuple(self.change)] = self.bounds[tuple(self.change)] - self.delta
             print(self.bounds)
 
-    def get_block_pos(self, mask, height, stroke=10):
-        top = int(height - stroke / 2)
-        bottom = int(height + stroke / 2)
-        nr_blocks = 21.0
-        block_width = mask.shape[1] / nr_blocks
-        block_counts = np.zeros(int(nr_blocks))
-        for b in range(int(nr_blocks)):
-            count = np.sum(mask[int(top): int(bottom),
-                          int(b * block_width):int((b + 1) * block_width)])
-            block_counts[b] = count
-        block_counts[10] += 10
-        max_b = np.argmax(block_counts)
-
-        left, right = int(max_b * block_width), int((max_b + 1) * block_width)
-        self.lines = [((0, top), (640, top)), ((0, bottom),
-                       (640, bottom)),((left, top), (left, bottom)), ((right, top), (right, bottom))]
-
-        return max_b / nr_blocks * 2.0 - 1.0
+    def get_block_pos(self, mask, height_list, stroke=10):
+        pos_list = []
+        self.lines = []
+        for height in height_list:
+            top = int(height - stroke / 2)
+            bottom = int(height + stroke / 2)
+            nr_blocks = 21.0
+            block_width = mask.shape[1] / nr_blocks
+            block_counts = np.zeros(int(nr_blocks))
+            for b in range(int(nr_blocks)):
+                count = np.sum(mask[int(top): int(bottom),
+                              int(b * block_width):int((b + 1) * block_width)])
+                block_counts[b] = count
+            block_counts[10] += 10
+            max_b = np.argmax(block_counts)
+            left, right = int(max_b * block_width), int((max_b + 1) * block_width)
+            #self.lines.append([((0, top), (640, top)), ((0, bottom),
+            #           (640, bottom)),((left, top), (left, bottom)), ((right, top), (right, bottom))])
+            self.lines.append([((left, top), (right, top)), ((left, bottom),
+                       (right, bottom)),((left, top), (left, bottom)), ((right, top), (right, bottom))])
+            pos_list.append(max_b / nr_blocks * 2.0 - 1.0)
+        return pos_list
 
     def get_pos(self, mask, height, stroke=10):
         sum = 0

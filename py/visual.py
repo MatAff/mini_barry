@@ -4,11 +4,18 @@
 import cv2
 import numpy as np
 import time
+import os
 
 class Camera(object):
 
-    def __init__(self):
-        self.vc = cv2.VideoCapture(0)
+    def __init__(self, filename=None):
+        if filename is None:
+            self.vc = cv2.VideoCapture(0)
+        else:
+            if not os.path.exists(filename):
+                raise ValueError("file not found: " + filename)
+            print("running from recording: " + filename)
+            self.vc = cv2.cv2.VideoCapture(filename)
 
     def get(self):
         rval, frame = self.vc.read()
@@ -27,9 +34,9 @@ class Display(object):
         self.name = window_name
         cv2.namedWindow(self.name)
 
-    def show(self, frame):
+    def show(self, frame, delay=5):
         cv2.imshow(self.name, frame)
-        key = cv2.waitKey(20)
+        key = cv2.waitKey(delay)
         return key
 
     def close(self):
@@ -51,6 +58,13 @@ class Recorder(object):
         self.out.release()
 
 class Annotate(object):
+
+    @staticmethod
+    def add_lines_list(frame, lines_list, color):
+        for lines in lines_list:
+            for l in lines:
+                frame = Annotate.add_line(frame, l, color)
+        return frame
 
     @staticmethod
     def add_multiple_lines(frame, lines, color):
