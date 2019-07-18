@@ -13,7 +13,7 @@ class Camera(object):
             self.vc = cv2.VideoCapture(0)
         else:
             if not os.path.exists(filename):
-                raise ValueError("file not found: " + filename)
+                raise FileNotFoundError("file not found: " + filename)
             print("running from recording: " + filename)
             self.vc = cv2.cv2.VideoCapture(filename)
 
@@ -23,32 +23,40 @@ class Camera(object):
             return frame
         else:
             print('frame not captured')
-            return np.zeros((480, 640, 3))
+            return np.zeros((480, 640, 3)) # TODO: avoid hardcoded frame shape
 
     def release(self):
         self.vc.release()
 
 class Display(object):
 
-    def __init__(self, window_name):
-        self.name = window_name
-        cv2.namedWindow(self.name)
+    def __init__(self, window_name, show_frame=True):
+        self.show_frame = show_frame
+        if self.show_frame:
+            self.name = window_name
+            cv2.namedWindow(self.name)
 
     def show(self, frame, delay=5):
-        cv2.imshow(self.name, frame)
-        key = cv2.waitKey(delay)
-        return key
+        if self.show_frame:
+            cv2.imshow(self.name, frame)
+            key = cv2.waitKey(delay)
+            return key
 
     def close(self):
-        cv2.destroyWindow(self.name)
+        if self.show_frame:
+            cv2.destroyWindow(self.name)
 
 class Recorder(object):
 
-    def __init__(self, filename, fps, size):
+    def __init__(self, filename, fps, size, sparse=1):
+        self.sparse = sparse
+        self.count = 0
         self.out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'DIVX'), fps, size)
 
     def write(self, frame):
-        self.out.write(frame)
+        if self.count % self.sparse == 0:
+            self.out.write(frame)
+        self.count += 1
 
     def save_img(self, frame, filename=None):
         if filename is None : filename = str(time.time()) + '.png'

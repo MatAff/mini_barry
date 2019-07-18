@@ -1,16 +1,19 @@
 
 # Improvements to make
-# update code so that barry.py runs again
+# make rl_manager responsible for batch update
 # get better surface
 # test
 # make rl code more general
-# don't forget not to run from video for testing
 # more granular block detection
-# return None for missing (display cross)
 # code clean up
-# use arguments to swith on/off display
-# Clean motor code
 
+# figure out why rl doesn't always return an action >> DONE
+# return None for missing (display cross) >> DONE
+# figure out key interrupt >> DONE
+# delete dead code >> DONE
+# use arguments to swith on/off display >> DONE
+# update code so that barry.py runs again >> DONE
+# move filter to setttings >> DONE
 # make it possible to run from video >> DONE
 # Add frame counter >> DONE
 # Record every fifth frame >> DONE

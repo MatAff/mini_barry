@@ -12,7 +12,8 @@ MIN_KEY = 173 # 45
 
 class Filter(object):
 
-    def __init__(self, lower, upper):
+    def __init__(self, ranges):
+        lower, upper = ranges[0], ranges[1] # TODO, make pretty
         self.bounds = np.array([lower, upper])
         self.change = [0,0]
         self.delta = 5
@@ -57,14 +58,15 @@ class Filter(object):
                 count = np.sum(mask[int(top): int(bottom),
                               int(b * block_width):int((b + 1) * block_width)])
                 block_counts[b] = count
-            block_counts[10] += 10
-            max_b = np.argmax(block_counts)
-            left, right = int(max_b * block_width), int((max_b + 1) * block_width)
-            #self.lines.append([((0, top), (640, top)), ((0, bottom),
-            #           (640, bottom)),((left, top), (left, bottom)), ((right, top), (right, bottom))])
-            self.lines.append([((left, top), (right, top)), ((left, bottom),
-                       (right, bottom)),((left, top), (left, bottom)), ((right, top), (right, bottom))])
-            pos_list.append(max_b / nr_blocks * 2.0 - 1.0)
+            if sum(block_counts) > 0 and max(block_counts) > 250:
+                max_b = np.argmax(block_counts)
+                left, right = int(max_b * block_width), int((max_b + 1) * block_width)
+                # TODO: return simple list of lines, rather than list of list of tupple of tupple
+                self.lines.append([((left, top), (right, top)), ((left, bottom),
+                           (right, bottom)),((left, top), (left, bottom)), ((right, top), (right, bottom))])
+                pos_list.append(max_b / (nr_blocks - 1) * 2.0 - 1.0)
+            else:
+                pos_list.append(None)
         return pos_list
 
     def get_pos(self, mask, height, stroke=10):

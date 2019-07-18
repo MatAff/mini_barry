@@ -119,7 +119,9 @@ class RLStateAction(RLLineFollow):
 		val = val[np.isnan(val)==False]
 		return pos, val
 
+
 	def decide(self, line_pos, action):
+		print('called')
 		super(RLStateAction, self).decide(line_pos)
 		if self.phase == 0:
 			if self.line_pos[1] is not None:
@@ -128,7 +130,7 @@ class RLStateAction(RLLineFollow):
 			pos_actions = np.arange(-0.15, 0.15, 0.01)
 			val = np.empty((0,1))
 			for act in pos_actions:
-				X = np.append(line_pos, act)
+				X = np.append(self.line_pos, act)
 				y = self.model.predict(np.array([X]))[0]
 				val = np.append(val, y)
 			#plt.plot(val)
@@ -144,16 +146,19 @@ class RLStateAction(RLLineFollow):
 
 class rl_manager(object):
 
-    def __init__(self, state_space):
+    def __init__(self, state_space, do_run=True):
         self.control = RLStateAction(state_space)
         self.control.pre(run_nr=0)
+        self.do_run = do_run
 
     def switch_batch(self, run_nr):
-        self.control.post(run_nr)
-        self.control.pre(run_nr + 1)
+        if self.do_run:
+            self.control.post(run_nr)
+            self.control.pre(run_nr + 1)
 
     def decide(self, line_pos, action):
-        action = self.control.decide(line_pos, action)
+        if self.do_run:
+            action = self.control.decide(line_pos, action)
         return action
 
 # Plot
