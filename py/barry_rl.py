@@ -9,21 +9,22 @@ from fps import FPS
 from reinforcement_learning import rl_manager
 
 # settings
-show_frame = True # toggle to switch off/on display
-#show_frame = False
-filename = "../media/first_circle.avi"
-#filename = None
-display_delay = 50
-rl_batch_size = 50
+#show_frame = True # toggle to switch off/on display
+show_frame = False
+#filename = "../media/first_circle.avi"
+filename = None
+display_delay = 5
+rl_batch_size = 550
 #filter_values = [[15, 15, 53], [80, 137, 137]]
-filter_values = [[44, 50, 26],[ 75, 222, 132]]
+#filter_values = [[33, 42, 30],[ 98, 178, 70]] # dusk
+filter_values = [[42, 43, 41],[ 76, 193, 84]] # day
 
 # keys
 KEY_ESC = 27
 
 # set constants
 SENSE_HEIGHT_LIST = [470, 450, 430, 410, 390, 370, 350, 330, 310]
-SENSE_WIDTH = 10
+SENSE_WIDTH = 25
 
 # initialize objects
 cam = Camera(filename)
@@ -33,7 +34,7 @@ twist = Twist(forward=0.5)
 ada_drive = AdaDrive()
 fpss = FPS()
 c_filter = Filter(filter_values)
-rl = rl_manager(len(SENSE_HEIGHT_LIST), False)
+rl = rl_manager(len(SENSE_HEIGHT_LIST), True)
 
 # initialize variables
 running = True
@@ -51,7 +52,7 @@ while running:
 
     # SENSE - get frame
     frame = cam.get()
-    fpss.update()
+    print(fpss.update())
 
     # DECIDE - apply filter and get position
     mask_frame, mask = c_filter.apply(frame, True, False)
@@ -59,10 +60,10 @@ while running:
     block_line_list = c_filter.get_lines()
 
     # DECIDE - set drive
-    if pos_list[3] is None:
+    if pos_list[6] is None:
         rotate = 0
     else:
-        rotate = pos_list[3] * -0.15
+        rotate = pos_list[6] * -0.10
 
     # DECIDE - reinforcement learning
     rl.decide(pos_list, rotate)
@@ -78,21 +79,21 @@ while running:
     # SHARE - display
     show_frame = frame
     #show_frame = mask_frame
-    show_frame = Annotate.add_text(show_frame, fpss.to_string(), (0, 255, 0), 1)
-    show_frame = Annotate.add_line(show_frame, l, (0, 255, 0))
-    show_frame = Annotate.add_lines_list(show_frame, block_line_list, (0, 0, 255))
-    show_frame = Annotate.add_text(show_frame, 'rotate: %.3f' % rotate, (0, 255, 0), 2)
-    show_frame = Annotate.add_text(show_frame, twist.to_string(), (0, 255, 0), 3)
-    key = disp.show(show_frame, delay=display_delay)
+    #show_frame = Annotate.add_text(show_frame, fpss.to_string(), (0, 255, 0), 1)
+    #show_frame = Annotate.add_line(show_frame, l, (0, 255, 0))
+    #show_frame = Annotate.add_lines_list(show_frame, block_line_list, (0, 0, 255))
+    #show_frame = Annotate.add_text(show_frame, 'rotate: %.3f' % rotate, (0, 255, 0), 2)
+    #show_frame = Annotate.add_text(show_frame, twist.to_string(), (0, 255, 0), 3)
+    #key = disp.show(show_frame, delay=display_delay)
 
     # SHARE - record
     rec.write(show_frame)
 
     # batch update
-    if frame_count % rl_batch_size == 0:
-        print('new batch')
-        ada_drive.stop() # pause driving
-        rl.switch_batch(int(frame_count / rl_batch_size))
+    #if frame_count % rl_batch_size == 0:
+    #    print('new batch')
+    #    ada_drive.stop() # pause driving
+    #    rl.switch_batch(int(frame_count / rl_batch_size))
 
     # check status
     if key == KEY_ESC:

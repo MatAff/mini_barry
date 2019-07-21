@@ -127,7 +127,7 @@ class RLStateAction(RLLineFollow):
 			if self.line_pos[1] is not None:
 				self.rotate = self.line_pos[1] * 0.1
 		else:
-			pos_actions = np.arange(-0.15, 0.15, 0.01)
+			pos_actions = np.arange(-0.10, 0.10, 0.01)
 			val = np.empty((0,1))
 			for act in pos_actions:
 				X = np.append(self.line_pos, act)
