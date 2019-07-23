@@ -153,7 +153,9 @@ def click_filter(filename):
 #filename = '../media/late_afternoon.avi'
 #filename = '../media/late_afternoon2.avi'
 #filename = '../media/late_afternoon_3.avi'
-filename = "../media/first_circle.avi"
+#filename = "../media/first_circle.avi"
+filename = "./dusk_04.avi"
+filename = "./day_04.avi"
 
 values = click_filter(filename)
 print(values)
