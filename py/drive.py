@@ -5,6 +5,8 @@ import numpy as np
 
 try:
      from adafruit_motorkit import MotorKit
+except ModuleNotFoundError:
+	print("adafruit_motorkit module not found, no motors will move")
 except NotImplementedError:
      print("Not running on correct board, no motors will move")
 
@@ -85,5 +87,3 @@ class AdaDrive(object):
         if self.kit is not None:
             self.kit.motor1.throttle = 0.0
             self.kit.motor2.throttle = 0.0
-
-
