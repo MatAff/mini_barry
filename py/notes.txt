@@ -3,11 +3,11 @@
 # actions
 # profile >> Done
 # add light >> Done
-# record run with light
-# build filter with lit run
+# record run with light >> Done
+# build filter with lit run >> Done
 # reduce frame size
-# skip erode
-# don't apply mask to frame
+# skip erode >> Done
+# don't apply mask to frame >> Done
 
    ncalls	  tottime	  percall	  cumtime	  percall	 filename:lineno(function)
 87	1.388	0.016	1.388	0.016	 {inRange} << has to happen

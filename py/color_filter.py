@@ -13,8 +13,7 @@ MIN_KEY = 173 # 45
 class Filter(object):
 
     def __init__(self, ranges):
-        lower, upper = ranges[0], ranges[1] # TODO, make pretty
-        self.bounds = np.array([lower, upper])
+        self.bounds = np.array(ranges)
         self.change = [0,0]
         self.delta = 5
 
@@ -30,9 +29,11 @@ class Filter(object):
             kernel = np.ones((5,5),np.uint8)
             mask = cv2.dilate(mask,kernel,iterations = 1)
 
-        res = cv2.bitwise_and(bgr_frame, bgr_frame, mask=mask)
+        return mask
 
-        return(res, mask)
+    def apply_mask(self, bgr_frame, mas):
+        masked_frame = cv2.bitwise_and(bgr_frame, mask)
+        return masked_frame
 
     def key_handler(self, key):
         if key == H_KEY: self.change = [1 - self.change[0], 0]
@@ -58,7 +59,7 @@ class Filter(object):
                 count = np.sum(mask[int(top): int(bottom),
                               int(b * block_width):int((b + 1) * block_width)])
                 block_counts[b] = count
-            if sum(block_counts) > 0 and max(block_counts) > 250:
+            if sum(block_counts) > 0 and max(block_counts) > 75:
                 max_b = np.argmax(block_counts)
                 left, right = int(max_b * block_width), int((max_b + 1) * block_width)
                 # TODO: return simple list of lines, rather than list of list of tupple of tupple

@@ -11,6 +11,8 @@ class Camera(object):
     def __init__(self, filename=None):
         if filename is None:
             self.vc = cv2.VideoCapture(0)
+            self.vc.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+            self.vc.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
         else:
             if not os.path.exists(filename):
                 raise FileNotFoundError("file not found: " + filename)

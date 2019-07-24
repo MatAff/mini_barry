@@ -112,11 +112,12 @@ def interactive_explore(img):
         else:
             if len(l_colors) > 4:
                 ranges = get_ranges(l_colors)
-                print(ranges)
                 masked_frame = apply_filter(img, ranges)
             cv2.imshow('explore',masked_frame)
         key = cv2.waitKey(20)
         if key == KEY_SPACE:
+            ranges = get_ranges(l_colors)
+            print(ranges)
             show_full = not show_full
         if key == KEY_ESC:
             running = False
@@ -149,7 +150,7 @@ def click_filter(filename):
 
 ### MAIN ###
 
-filename = '../media/headlamp_03.avi'
+filename = '../media/headlamp_04.avi'
 
 values = click_filter(filename)
 print(values)
