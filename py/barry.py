@@ -6,7 +6,7 @@ from visual import Camera, Display, Recorder, Annotate
 from color_filter import Filter
 from drive import Twist, AdaDrive
 from fps import FPS
-from reinforcement_learning import rl_manager
+#from reinforcement_learning import rl_manager
 
 # settings
 run_on_pi = True
@@ -14,10 +14,11 @@ show_frame = True
 annotate = True
 filename = "./day_08.avi"
 display_delay = 150
-rl_batch_size = 550
+#rl_batch_size = 550
 filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
-                 'day': [[42, 43, 41],[ 76, 193, 84]]}
-time_of_day = 'day'
+                 'day': [[42, 43, 41],[ 76, 193, 84]],
+                 'head': [[39, 71, 39], [93, 221, 221]]}
+time_of_day = 'head'
 
 if run_on_pi:
     show_frame = False
@@ -26,7 +27,7 @@ if run_on_pi:
 
 # set constants
 KEY_ESC = 27
-SENSE_HEIGHT_LIST = [470, 450, 430, 410, 390, 370, 350, 330, 310]
+#SENSE_HEIGHT_LIST = [470, 450, 430, 410, 390, 370, 350, 330, 310]
 SENSE_HEIGHT_LIST = [350]
 SENSE_WIDTH = 20
 
@@ -38,7 +39,7 @@ twist = Twist(forward=0.5)
 ada_drive = AdaDrive()
 fpss = FPS()
 c_filter = Filter(filter_values[time_of_day])
-rl = rl_manager(len(SENSE_HEIGHT_LIST), True)
+#rl = rl_manager(len(SENSE_HEIGHT_LIST), True)
 
 # initialize variables
 running = True
@@ -65,8 +66,8 @@ while running:
     #block_line_list = c_filter.get_lines()
 
     # set rotate
-    if pos_list[6] is not None:
-        rotate = pos_list[6] * -0.10
+    if pos_list[0] is not None:
+        rotate = pos_list[0] * -0.10
     else:
         rotate = 0
 
