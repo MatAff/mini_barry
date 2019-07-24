@@ -80,7 +80,7 @@ while running:
 
     # drive
     ada_drive.drive(twist) # Not available on laptop
-    twist.set_forward(0.25)
+    twist.set_forward(0.30)
 
     # SHARE - display
     show_frame = frame
