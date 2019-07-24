@@ -2,7 +2,7 @@
 
 # actions
 # profile >> Done
-# add light >> Charging
+# add light >> Done
 # record run with light
 # build filter with lit run
 # reduce frame size
