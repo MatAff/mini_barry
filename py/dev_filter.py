@@ -76,7 +76,7 @@ def show_big(img):
 
 def get_ranges(colors):
     col_arr = np.vstack(colors)
-    col_arr = winsorize(col_arr, (.05, .05))
+    #col_arr = winsorize(col_arr, (.05, .05))
     col_arr = np.array(col_arr)
     min_hsv = col_arr.min(axis=0)
     max_hsv = col_arr.max(axis=0)
@@ -84,7 +84,8 @@ def get_ranges(colors):
 
 def apply_filter(img, ranges):
     filter = Filter(ranges)
-    mask_frame, mask = filter.apply(img, False, False)
+    mask = filter.apply(img, False, False)
+    mask_frame = filter.apply_mask(img, mask)
     return mask_frame
 
 def interactive_explore(img):
@@ -150,7 +151,7 @@ def click_filter(filename):
 
 ### MAIN ###
 
-filename = '../media/headlamp_04.avi'
+filename = '../media/headlamp_09.avi'
 
 values = click_filter(filename)
 print(values)

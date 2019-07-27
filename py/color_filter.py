@@ -31,8 +31,16 @@ class Filter(object):
 
         return mask
 
-    def apply_mask(self, bgr_frame, mas):
-        masked_frame = cv2.bitwise_and(bgr_frame, mask)
+    def apply_small(self, bgr_frame):
+        lower_frame = bgr_frame[120:240, 0:320] # crop
+        hsv_frame = cv2.cvtColor(lower_frame, cv2.COLOR_BGR2HSV) # hsv
+        mask = cv2.inRange(hsv_frame, self.bounds[0,:], self.bounds[1,:]) # mask
+        mask_small = mask.reshape(5, 24, 20, 16).mean(axis=(1,3)) # reduce size
+        return mask_small
+
+    def apply_mask(self, bgr_frame, mask):
+        #masked_frame = cv2.bitwise_and(bgr_frame, mask)
+        masked_frame = cv2.bitwise_and(bgr_frame, bgr_frame, mask=mask)
         return masked_frame
 
     def key_handler(self, key):
