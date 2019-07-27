@@ -6,7 +6,7 @@ import cv2
 import os
 import matplotlib.pyplot as plt
 from color_filter import Filter
-from scipy.stats.mstats_basic import winsorize
+#from scipy.stats.mstats_basic import winsorize
 import random
 
 KEY_ESC = 27
@@ -84,7 +84,7 @@ def get_ranges(colors):
 
 def apply_filter(img, ranges):
     filter = Filter(ranges)
-    mask = filter.apply(img, False, False)
+    mask = filter.apply(img)
     mask_frame = filter.apply_mask(img, mask)
     return mask_frame
 
@@ -125,8 +125,6 @@ def interactive_explore(img):
 
     cv2.destroyAllWindows()
 
-    print("got here")
-
     ranges = get_ranges(l_colors)
     print(ranges)
     return get_ranges(ranges)
@@ -151,7 +149,7 @@ def click_filter(filename):
 
 ### MAIN ###
 
-filename = '../media/headlamp_09.avi'
+filename = '../media/day_light_02.avi'
 
 values = click_filter(filename)
 print(values)

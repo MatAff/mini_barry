@@ -1,4 +1,10 @@
 
+# actions
+# make better filter for day time >> Postpone
+# switch to mask_small for input >> DONE
+# create exclude functionality for filter
+
+
 
 # actions
 # profile >> Done
