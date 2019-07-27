@@ -29,7 +29,7 @@ if run_on_pi:
 
 # set constants
 KEY_ESC = 27
-SENSE_HEIGHT_LIST = [470, 450, 430, 410, 390, 370, 350, 330, 310]
+SENSE_HEIGHT_LIST = [230,210,190,170,150,130]
 #SENSE_HEIGHT_LIST = [175]
 SENSE_WIDTH = 10
 
@@ -72,8 +72,8 @@ while running:
     mask_small = c_filter.apply_small(frame)
 
     # set rotate
-    if pos_list[0] is not None:
-        rotate = pos_list[0] * -0.10
+    if pos_list[3] is not None:
+        rotate = pos_list[3] * -0.45
     else:
         rotate = 0
 
