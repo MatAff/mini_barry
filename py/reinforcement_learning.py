@@ -17,6 +17,7 @@ def create_model(shape):
     activation = 'relu'
     model = keras.Sequential()
     model.add(keras.layers.Dense(50, activation=activation, input_shape=(shape[1],)))
+    model.add(keras.layers.Dense(50, activation=activation, input_shape=(shape[1],)))
     model.add(keras.layers.Dense(20, activation=activation))
     model.add(keras.layers.Dense(20, activation=activation))
     model.add(keras.layers.Dense(1))
@@ -76,11 +77,11 @@ class RLStateAction(RLBase):
         # create and train model
         if run_nr ==1:
             self.model = create_model(self.all_states.shape)
-            self.model.fit(self.all_states, self.all_discounted_rewards, epochs=50, batch_size=256, verbose=0)
+            self.model.fit(self.all_states, self.all_discounted_rewards, epochs=250, batch_size=256, verbose=0)
         if run_nr > 1:
             all_states_actions = np.append(self.all_states, np.array([self.all_actions]).transpose(), axis=1)
             self.model = create_model(all_states_actions.shape)
-            self.model.fit(all_states_actions, self.all_discounted_rewards, epochs=50, batch_size=256, verbose=0)
+            self.model.fit(all_states_actions, self.all_discounted_rewards, epochs=250, batch_size=256, verbose=0)
 
     def post(self):
         super(RLStateAction, self).post()
@@ -93,6 +94,7 @@ class RLStateAction(RLBase):
         elif self.run_nr ==1:
             print(state.shape)
             self.act = self.model.predict(np.array([state]))
+            print('rl action: %.2f' % self.act)
         else:
             pos_actions = np.arange(-0.25, 0.25, 0.05)
             val = np.empty((0,1))

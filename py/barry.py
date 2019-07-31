@@ -12,7 +12,7 @@ run_on_pi = True
 show_frame = True
 filename = "../media/headlamp_06.avi"
 display_delay = 50
-rl_batch_size = 250
+rl_batch_size = 1250
 filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
                  'day': [[42, 43, 41],[ 76, 193, 84]],
                  'day_light': [[39, 10, 39], [93, 125, 125]],
@@ -69,6 +69,8 @@ while running:
     rotate = pos_list[3] * -0.45
     print(rotate)
     rotate = rl.decide(mask_flat, reward, rotate)
+    if rotate > 0.5 : rotate = 0.5
+    if rotate < -0.5 : rotate = -0.5
     twist.set_rotate(rotate)
 
     # reverse if no line
