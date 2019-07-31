@@ -12,7 +12,7 @@ run_on_pi = True
 show_frame = True
 filename = "../media/headlamp_06.avi"
 display_delay = 150
-rl_batch_size = 250
+rl_batch_size = 1250
 filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
                  'day': [[42, 43, 41],[ 76, 193, 84]],
                  'day_light': [[39, 10, 39], [93, 125, 125]],
@@ -20,7 +20,7 @@ filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
                  'night_light2': [[47,52,84],[90,165,254]]
                  }
 time_of_day = 'night_light2'
-min_mask_sum = 100
+min_mask_sum = 0
 
 if run_on_pi:
     show_frame = False
@@ -72,7 +72,7 @@ while running:
     twist.set_rotate(rotate)
 
     # reverse if no line
-    if mask.sum() < min_mask_sum : twist.set(-0.35, 0.05)
+    if mask.sum() < min_mask_sum : twist.set(-0.55, 0.05)
 
     # drive
     ada_drive.drive(twist) # Not available on laptop
