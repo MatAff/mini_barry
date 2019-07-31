@@ -82,17 +82,42 @@ def get_ranges(colors):
     max_hsv = col_arr.max(axis=0)
     return [min_hsv, max_hsv]
 
+def add_ranges(ranges, add):
+    ranges.append(add)
+    return get_ranges(ranges)
+
+def remove_ranges(ranges, rem):
+    print(ranges)
+    print(rem)
+    lower = ranges[0]
+    upper = ranges[1]
+    lc = lower - rem
+    uc = upper - rem
+    mm = lc * uc
+    mm[mm!=min(mm)] = 1
+    lc[mm>0] = 0
+    uc[mm>0] = 0
+    if max(abs(lc)) < max(abs(uc)):
+        lower = lower - lc
+    else:
+        upper = upper - uc
+    ranges = [lower, upper]
+    print(ranges)
+    return ranges
+
 def apply_filter(img, ranges):
     filter = Filter(ranges)
     mask = filter.apply(img)
     mask_frame = filter.apply_mask(img, mask)
     return mask_frame
 
-def interactive_explore(img):
+def interactive_explore(img, ranges=None):
 
     show_full = True
     l_colors = []
     r_colors = []
+    l_count = 0
+    r_count = 0
 
     hsv_frame = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     masked_frame = img
@@ -102,32 +127,46 @@ def interactive_explore(img):
             l_colors.append(hsv_frame[y,x])
         if event == cv2.EVENT_RBUTTONDOWN: #checks mouse left button down condition
             r_colors.append(hsv_frame[y,x])
+            print('trying to exclude')
+            print(r_colors[-1])
 
     cv2.namedWindow('explore')
     cv2.setMouseCallback('explore',mouse_click)
 
     running = True
     while(running):
+
+        # update ranges
+        if len(l_colors) > l_count:
+            l_count = len(l_colors)
+            print('adding')
+            if ranges is None:
+                ranges = get_ranges(l_colors)
+            else:
+                ranges = add_ranges(ranges, l_colors[-1]) # add last color
+            print(ranges)
+        if len(r_colors) > r_count:
+            r_count = len(r_colors)
+            print('removing')
+            # TODO will throw error if done first
+            ranges = remove_ranges(ranges, r_colors[-1])
+
         if show_full:
             cv2.imshow('explore',img)
         else:
-            if len(l_colors) > 4:
-                ranges = get_ranges(l_colors)
+            if not ranges is None:
                 masked_frame = apply_filter(img, ranges)
             cv2.imshow('explore',masked_frame)
         key = cv2.waitKey(20)
         if key == KEY_SPACE:
-            ranges = get_ranges(l_colors)
-            print(ranges)
             show_full = not show_full
         if key == KEY_ESC:
             running = False
 
     cv2.destroyAllWindows()
 
-    ranges = get_ranges(l_colors)
     print(ranges)
-    return get_ranges(ranges)
+    return ranges
 
 def click_filter(filename):
     all_imgs = pull_video_imgs(filename)
@@ -149,7 +188,24 @@ def click_filter(filename):
 
 ### MAIN ###
 
-filename = '../media/day_light_02.avi'
+filename = '../media/headlamp_06.avi'
+all_imgs = pull_video_imgs(filename)
 
-values = click_filter(filename)
-print(values)
+select_imgs = random_imgs(all_imgs, 32)
+resized_imgs = resize_img_list(select_imgs, (320,240))
+resized_imgs = crop_imgs(resized_imgs)
+img = merge_images(resized_imgs, 8, 4)
+ranges = interactive_explore(img)
+
+ranges = [np.array([47,52,84]),np.array([90,165,254])]
+
+select_imgs = random_imgs(all_imgs, 32)
+resized_imgs = resize_img_list(select_imgs, (320,240))
+resized_imgs = crop_imgs(resized_imgs)
+img = merge_images(resized_imgs, 8, 4)
+ranges = interactive_explore(img, ranges)
+
+
+
+#values = click_filter(filename)
+#print(values)

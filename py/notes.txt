@@ -1,8 +1,18 @@
 
 # actions
+# work on night time filter >> Done
+# use wall
+# add back up functionality >> Done
+# have reward be input for RL and backup should always be zero
+
+
+
+
+
+# actions
 # make better filter for day time >> Postpone
 # switch to mask_small for input >> DONE
-# create exclude functionality for filter
+# create exclude functionality for filter >> Harder then expected
 
 
 
