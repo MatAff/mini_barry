@@ -11,8 +11,8 @@ from reinforcement_learning import rl_manager
 run_on_pi = True
 show_frame = True
 filename = "../media/headlamp_06.avi"
-display_delay = 150
-rl_batch_size = 1250
+display_delay = 50
+rl_batch_size = 250
 filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
                  'day': [[42, 43, 41],[ 76, 193, 84]],
                  'day_light': [[39, 10, 39], [93, 125, 125]],
