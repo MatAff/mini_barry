@@ -13,13 +13,14 @@ def discount_reward(rewards, discount):
         running_reward = running_reward * discount + rewards[i] * (1 - discount)
     return(discounted_rewards)
 
-def create_model(shape):
-    activation = 'relu'
+def create_model(shape, layers=[10, 10], out=1, activation='relu'):
     model = keras.Sequential()
-    model.add(keras.layers.Dense(50, activation=activation, input_shape=(shape[1],)))
-    model.add(keras.layers.Dense(20, activation=activation))
-    model.add(keras.layers.Dense(20, activation=activation))
-    model.add(keras.layers.Dense(1))
+    for i, l in enumerate(layers):
+        if i==0:
+            model.add(keras.layers.Dense(l, activation=activation, input_shape=(shape[1],)))
+        else:
+            model.add(keras.layers.Dense(l, activation=activation))
+    model.add(keras.layers.Dense(out))
     model.compile(optimizer='rmsprop', loss='mse')
     return(model)
 
@@ -61,22 +62,23 @@ class RLBase(object):
         self.all_discounted_rewards = np.append(self.all_discounted_rewards, discounted_rewards[self.shift:])
 
     def decide(self, state, reward):
+        self.states = np.append(self.states, np.array([state]), 0) # Store
         self.rewards = np.append(self.rewards, reward)  # Update reward list
         self.err = self.err * self.err_discount + (1 - self.err_discount) * ((random.random() - 0.5) / 30.0) # Update error
-        self.states = np.append(self.states, np.array([state]), 0) # Store
 
 class RLStateAction(RLBase):
 
-    def __init__(self, state_space):
+    def __init__(self, state_space, layers, pause=False):
         super(RLStateAction, self).__init__(state_space)
+        self.layers = layers
 
     def pre(self, run_nr):
         super(RLStateAction, self).pre(run_nr)
 
         # create and train model
         if run_nr ==1:
-            self.model = create_model(self.all_states.shape)
-            self.model.fit(self.all_states, self.all_discounted_rewards, epochs=50, batch_size=256, verbose=0)
+            self.model = create_model(self.all_states.shape, self.layers)
+            self.model.fit(self.all_states, self.all_actions, epochs=1000, batch_size=256, verbose=0)
         if run_nr > 1:
             all_states_actions = np.append(self.all_states, np.array([self.all_actions]).transpose(), axis=1)
             self.model = create_model(all_states_actions.shape)
@@ -88,11 +90,13 @@ class RLStateAction(RLBase):
     def decide(self, state, reward, action):
         super(RLStateAction, self).decide(state, reward)
 
+        action_in = action
+
         if self.run_nr == 0:
             self.act = action
         elif self.run_nr ==1:
             print(state.shape)
-            self.act = self.model.predict(np.array([state]))
+            self.act = self.model.predict(np.array([state]))[0,0]
         else:
             pos_actions = np.arange(-0.25, 0.25, 0.05)
             val = np.empty((0,1))
@@ -106,22 +110,7 @@ class RLStateAction(RLBase):
                 print('rl action: %.2f' % best_act)
                 self.act = best_act
 
+        print(np.round(action_in, 3), " >> ", np.round(self.act, 3))
+
         self.actions = np.append(self.actions, self.act)
         return(self.act)
-
-class rl_manager(object):
-
-    def __init__(self, state_space, do_run=True):
-        self.control = RLStateAction(state_space)
-        self.control.pre(run_nr=0)
-        self.do_run = do_run
-
-    def switch_batch(self, run_nr):
-        if self.do_run:
-            self.control.post()
-            self.control.pre(run_nr)
-
-    def decide(self, state, reward, action):
-        if self.do_run:
-            action = self.control.decide(state, reward, action)
-        return action

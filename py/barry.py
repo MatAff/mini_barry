@@ -5,10 +5,10 @@ from visual import Camera, Display, Recorder, Annotate
 from color_filter import Filter
 from drive import Twist, AdaDrive
 from fps import FPS
-from reinforcement_learning import rl_manager
+from reinforcement_learning import RLStateAction
 
 # settings
-run_on_pi = True
+run_on_pi = False
 show_frame = True
 filename = "../media/headlamp_06.avi"
 display_delay = 50
@@ -38,7 +38,8 @@ twist = Twist(forward=0.5)
 ada_drive = AdaDrive()
 fpss = FPS()
 c_filter = Filter(filter_values[time_of_day])
-rl = rl_manager(100, True)
+rl = RLStateAction(100, layers=[50, 50, 10])
+rl.pre(0)
 
 # initialize variables
 running = True
@@ -67,7 +68,6 @@ while running:
 
     # set twist
     rotate = pos_list[3] * -0.45
-    print(rotate)
     rotate = rl.decide(mask_flat, reward, rotate)
     twist.set_rotate(rotate)
 
@@ -75,7 +75,7 @@ while running:
     if mask.sum() < min_mask_sum : twist.set(-0.55, 0.05)
 
     # drive
-    ada_drive.drive(twist) # Not available on laptop
+    ada_drive.drive(twist) # not available on laptop
     twist.set_forward(0.35)
 
     # display and record
@@ -87,13 +87,13 @@ while running:
     if frame_count % rl_batch_size == 0:
         print('new batch')
         ada_drive.stop() # pause driving
-        rl.switch_batch(int(frame_count / rl_batch_size))
+        if frame_count > 0 :
+            rl.post()
+            rl.pre(int(frame_count / rl_batch_size))
+    frame_count += 1
 
     # check status
     if key == KEY_ESC : running = False
-
-    # update frame count
-    frame_count += 1
 
 ada_drive.stop()
 cam.release()

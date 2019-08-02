@@ -1,9 +1,18 @@
 
-# actions
+# ACTIONS
+# improve back up functionality (only back up if not enough pixels detected for several frames in a row)
+# improve mimic accuracy
+# get mimic running
+
+# COMPLETED ACTIONS
+# remove need for rl manager >> DONE
+# get mimic sim running >> DONE
+# allow specification of model complexity in rl >> Done
+# Make model creation dynamic >> Done
 # work on night time filter >> Done
-# use wall
+# use wall >> Done
 # add back up functionality >> Done
-# have reward be input for RL and backup should always be zero
+# have reward be input for RL and backup should always be zero >> Failed
 
 
 

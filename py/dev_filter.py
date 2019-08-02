@@ -188,7 +188,7 @@ def click_filter(filename):
 
 ### MAIN ###
 
-filename = '../media/headlamp_06.avi'
+filename = '../media/rl_03.avi'
 all_imgs = pull_video_imgs(filename)
 
 select_imgs = random_imgs(all_imgs, 32)
