@@ -69,6 +69,8 @@ while running:
     # set twist
     rotate = pos_list[3] * -0.45
     rotate = rl.decide(mask_flat, reward, rotate)
+    if rotate > 0.5 : rotate = 0.5
+    if rotate < -0.5 : rotate = -0.5
     twist.set_rotate(rotate)
 
     # reverse if no line
