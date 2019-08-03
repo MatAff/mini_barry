@@ -15,20 +15,12 @@ def discount_reward(rewards, discount):
 
 def create_model(shape, layers=[10, 10], out=1, activation='relu'):
     model = keras.Sequential()
-<<<<<<< HEAD
     for i, l in enumerate(layers):
         if i==0:
             model.add(keras.layers.Dense(l, activation=activation, input_shape=(shape[1],)))
         else:
             model.add(keras.layers.Dense(l, activation=activation))
     model.add(keras.layers.Dense(out))
-=======
-    model.add(keras.layers.Dense(50, activation=activation, input_shape=(shape[1],)))
-    model.add(keras.layers.Dense(50, activation=activation, input_shape=(shape[1],)))
-    model.add(keras.layers.Dense(20, activation=activation))
-    model.add(keras.layers.Dense(20, activation=activation))
-    model.add(keras.layers.Dense(1))
->>>>>>> fa0fb8901cabaf5c00cc52ed52b10fa9e5cefc03
     model.compile(optimizer='rmsprop', loss='mse')
     return(model)
 
@@ -80,23 +72,19 @@ class RLStateAction(RLBase):
     def __init__(self, state_space, layers, pause=False):
         super(RLStateAction, self).__init__(state_space)
         self.layers = layers
+        self.model = create_model((10,101), self.layers)
 
     def pre(self, run_nr):
         super(RLStateAction, self).pre(run_nr)
 
         # create and train model
         if run_nr ==1:
-<<<<<<< HEAD
-            self.model = create_model(self.all_states.shape, self.layers)
-            self.model.fit(self.all_states, self.all_actions, epochs=5000, batch_size=256, verbose=0)
-=======
-            self.model = create_model(self.all_states.shape)
-            self.model.fit(self.all_states, self.all_discounted_rewards, epochs=250, batch_size=256, verbose=0)
->>>>>>> fa0fb8901cabaf5c00cc52ed52b10fa9e5cefc03
+            print('mimic')
+            self.model_mimic = create_model(self.all_states.shape, self.layers)
+            self.model_mimic.fit(self.all_states, self.all_actions, epochs=2000, batch_size=256, verbose=0)
         if run_nr > 1:
             all_states_actions = np.append(self.all_states, np.array([self.all_actions]).transpose(), axis=1)
-            self.model = create_model(all_states_actions.shape)
-            self.model.fit(all_states_actions, self.all_discounted_rewards, epochs=250, batch_size=256, verbose=0)
+            self.model.fit(all_states_actions, self.all_discounted_rewards, epochs=500, batch_size=256, verbose=0)
 
     def post(self):
         super(RLStateAction, self).post()
@@ -107,13 +95,8 @@ class RLStateAction(RLBase):
             self.act = action
         elif self.run_nr ==1:
             print(state.shape)
-<<<<<<< HEAD
-            self.act = self.model.predict(np.array([state]))[0,0]
+            self.act = self.model_mimic.predict(np.array([state]))[0,0]
             self.before_after = np.append(self.before_after, np.array([[action, self.act]]), axis=0)
-=======
-            self.act = self.model.predict(np.array([state]))
-            print('rl action: %.2f' % self.act)
->>>>>>> fa0fb8901cabaf5c00cc52ed52b10fa9e5cefc03
         else:
             pos_actions = np.arange(-0.25, 0.25, 0.05)
             val = np.empty((0,1))
