@@ -36,6 +36,7 @@ class RLBase(object):
         self.all_discounted_rewards = np.empty((0,1))
         self.all_mean_rewards = np.empty((0,1))
         self.mean_reward_list = np.empty((0,1))
+        self.before_after = np.empty((0,2))
 
     def pre(self, run_nr):
         self.run_nr = run_nr
@@ -78,7 +79,7 @@ class RLStateAction(RLBase):
         # create and train model
         if run_nr ==1:
             self.model = create_model(self.all_states.shape, self.layers)
-            self.model.fit(self.all_states, self.all_actions, epochs=1000, batch_size=256, verbose=0)
+            self.model.fit(self.all_states, self.all_actions, epochs=5000, batch_size=256, verbose=0)
         if run_nr > 1:
             all_states_actions = np.append(self.all_states, np.array([self.all_actions]).transpose(), axis=1)
             self.model = create_model(all_states_actions.shape)
@@ -89,14 +90,12 @@ class RLStateAction(RLBase):
 
     def decide(self, state, reward, action):
         super(RLStateAction, self).decide(state, reward)
-
-        action_in = action
-
         if self.run_nr == 0:
             self.act = action
         elif self.run_nr ==1:
             print(state.shape)
             self.act = self.model.predict(np.array([state]))[0,0]
+            self.before_after = np.append(self.before_after, np.array([[action, self.act]]), axis=0)
         else:
             pos_actions = np.arange(-0.25, 0.25, 0.05)
             val = np.empty((0,1))
@@ -110,7 +109,7 @@ class RLStateAction(RLBase):
                 print('rl action: %.2f' % best_act)
                 self.act = best_act
 
-        print(np.round(action_in, 3), " >> ", np.round(self.act, 3))
+        print(np.round(action, 3), " >> ", np.round(self.act, 3))
 
         self.actions = np.append(self.actions, self.act)
         return(self.act)

@@ -11,7 +11,7 @@ from reinforcement_learning import RLStateAction
 run_on_pi = False
 show_frame = True
 filename = "../media/headlamp_06.avi"
-display_delay = 50
+display_delay = 5
 rl_batch_size = 250
 filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
                  'day': [[42, 43, 41],[ 76, 193, 84]],
@@ -38,7 +38,7 @@ twist = Twist(forward=0.5)
 ada_drive = AdaDrive()
 fpss = FPS()
 c_filter = Filter(filter_values[time_of_day])
-rl = RLStateAction(100, layers=[50, 50, 10])
+rl = RLStateAction(100, layers=[75,50,25])
 rl.pre(0)
 
 # initialize variables
@@ -100,3 +100,10 @@ cam.release()
 rec.release()
 disp.close()
 disp_mask.close()
+
+import pandas as pd
+
+bf = pd.DataFrame(rl.before_after)
+print(rl.before_after)
+bf.plot()
+bf.plot.scatter(x=0, y=1)
