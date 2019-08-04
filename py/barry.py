@@ -1,7 +1,7 @@
 #/usr/bin/env python3
 
 import signal
-from visual import Camera, Display, Recorder, Annotate
+from visual import Camera, Display, Recorder
 from color_filter import Filter
 from drive import Twist, AdaDrive
 from fps import FPS
@@ -11,8 +11,8 @@ from reinforcement_learning import RLStateAction
 run_on_pi = True
 show_frame = True
 filename = "../media/headlamp_06.avi"
-display_delay = 5
-rl_batch_size = 550
+display_delay = 50
+rl_batch_size = 250
 filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
                  'day': [[42, 43, 41],[ 76, 193, 84]],
                  'day_light': [[39, 10, 39], [93, 125, 125]],
@@ -34,12 +34,11 @@ cam = Camera(filename)
 disp = Display('Barry', show_frame)
 disp_mask = Display('Barry2', show_frame)
 rec = Recorder('./barry.avi', 20, (320, 240), sparse=5)
-twist = Twist(forward=0.5)
+twist = Twist(forward=0.5, rotate_limit = 0.5)
 ada_drive = AdaDrive()
-fpss = FPS()
+fpss = FPS(5.0)
 c_filter = Filter(filter_values[time_of_day])
 rl = RLStateAction(100, layers=[75,50,25])
-rl.pre(0)
 
 # initialize variables
 running = True
@@ -58,19 +57,16 @@ while running:
 
     # get frame
     frame = cam.get()
-    print(fpss.update())
+    fpss.update(verbose=True)
 
     # apply filter
     mask = c_filter.apply_small(frame)
-    pos_list = c_filter.row_pos(mask)
     mask_flat = mask.flatten()
     reward = mask[2,9:12].sum() + mask[2,10:11].sum()
 
     # set twist
-    rotate = pos_list[3] * -0.45
+    rotate = c_filter.row_pos(mask)[3] * -0.45
     rotate = rl.decide(mask_flat, reward, rotate)
-    if rotate > 0.5 : rotate = 0.5
-    if rotate < -0.5 : rotate = -0.5
     twist.set_rotate(rotate)
 
     # reverse if no line

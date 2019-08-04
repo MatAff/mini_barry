@@ -17,9 +17,10 @@ KEY_RIGHT = 83
 
 class Twist(object):
 
-    def __init__(self, forward=0.0, rotate=0.0):
+    def __init__(self, forward=0.0, rotate=0.0, rotate_limit=None):
         self.forward = forward
         self.rotate = rotate
+        self.rotate_limit = rotate_limit
 
     def to_string(self):
         return 'Twist: %.2f %.2f' % (self.forward, self.rotate)
@@ -32,6 +33,8 @@ class Twist(object):
         self.forward = forward
 
     def set_rotate(self, rotate):
+        if self.rotate_limit is not None:
+            self.rotate = np.clip(self.rotate, -self.rotate_limit, self.rotate_limit)
         self.rotate = rotate
 
     def man(self, key):

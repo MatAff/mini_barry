@@ -72,19 +72,19 @@ class RLStateAction(RLBase):
     def __init__(self, state_space, layers, pause=False):
         super(RLStateAction, self).__init__(state_space)
         self.layers = layers
-        self.model = create_model((10,101), self.layers)
+        self.model_mimic = create_model((-1, state_space), self.layers)
+        self.model_state_action = create_model((-1, state_space + 1), self.layers)
+        self.pre(0)
 
     def pre(self, run_nr):
         super(RLStateAction, self).pre(run_nr)
 
-        # create and train model
-        if run_nr ==1:
-            print('mimic')
-            self.model_mimic = create_model(self.all_states.shape, self.layers)
+        # train model
+        if run_nr == 1:
             self.model_mimic.fit(self.all_states, self.all_actions, epochs=2000, batch_size=256, verbose=0)
-        if run_nr > 1:
+        if run_nr > 0:
             all_states_actions = np.append(self.all_states, np.array([self.all_actions]).transpose(), axis=1)
-            self.model.fit(all_states_actions, self.all_discounted_rewards, epochs=500, batch_size=256, verbose=0)
+            self.model_state_action.fit(all_states_actions, self.all_discounted_rewards, epochs=500, batch_size=256, verbose=0)
 
     def post(self):
         super(RLStateAction, self).post()
@@ -93,22 +93,24 @@ class RLStateAction(RLBase):
         super(RLStateAction, self).decide(state, reward)
         if self.run_nr == 0:
             self.act = action
-        elif self.run_nr ==1:
-            print(state.shape)
-            self.act = self.model_mimic.predict(np.array([state]))[0,0]
+        if self.run_nr > 0:
+            self.act_mimic = self.model_mimic.predict(np.array([state]))[0,0]
             self.before_after = np.append(self.before_after, np.array([[action, self.act]]), axis=0)
-        else:
+        if self.run_nr > 0:
             pos_actions = np.arange(-0.25, 0.25, 0.05)
             val = np.empty((0,1))
             for act in pos_actions:
                 X = np.append(state, act)
-                y = self.model.predict(np.array([X]))[0]
+                y = self.model_state_action.predict(np.array([X]))[0]
                 val = np.append(val, y)
             if val.size > 0:
                 print(val)
                 best_act = pos_actions[np.argmax(val)]
                 print('rl action: %.2f' % best_act)
-                self.act = best_act
+                self.act_state_action = best_act
+        if self.run_nr > 0:
+            p = np.min([(self.run_nr - 1.0) / 10.0, 1.0])
+            self.act = (1 - p) * self.act_mimic + p * self.act_state_action
 
         print(np.round(action, 3), " >> ", np.round(self.act, 3))
 

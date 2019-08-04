@@ -1,10 +1,20 @@
 
 # ACTIONS
 # improve back up functionality (only back up if not enough pixels detected for several frames in a row)
-# improve mimic accuracy
-# get mimic running
+# try recording every frame
+# try different tape color
+
+# HOLD
+# Train on separate thread
 
 # COMPLETED ACTIONS
+# Create transition between mimic and stateaction >> DONE
+# reduce fps prints >> DONE
+# make limit to rotate more elegant >> DONE
+# Remove need to call pre after initialization >> DONE
+# rl initialize models at start >> DONE
+# improve mimic accuracy >> DONE
+# get mimic running >> DONE
 # remove need for rl manager >> DONE
 # get mimic sim running >> DONE
 # allow specification of model complexity in rl >> Done
@@ -13,19 +23,9 @@
 # use wall >> Done
 # add back up functionality >> Done
 # have reward be input for RL and backup should always be zero >> Failed
-
-
-
-
-
-# actions
 # make better filter for day time >> Postpone
 # switch to mask_small for input >> DONE
 # create exclude functionality for filter >> Harder then expected
-
-
-
-# actions
 # profile >> Done
 # add light >> Done
 # record run with light >> Done
@@ -33,37 +33,17 @@
 # reduce frame size
 # skip erode >> Done
 # don't apply mask to frame >> Done
-
-   ncalls	  tottime	  percall	  cumtime	  percall	 filename:lineno(function)
-87	1.388	0.016	1.388	0.016	 {inRange} << has to happen
-87	1.349	0.016	1.349	0.016	 {cvtColor} << has to happen
-87	1.313	0.015	1.313	0.015	 {erode} << skip
-18	1.166	0.065	1.166	0.065	 {method 'write' of 'cv2.VideoWriter' objects} << nice to have
-87	1.152	0.013	1.152	0.013	 {bitwise_and} << skip   res = cv2.bitwise_and(bgr_frame, mask)
-13	0.959	0.074	0.972	0.075	 {built-in method _imp.create_dynamic}
-87	0.853	0.01	0.853	0.01	 {method 'read' of 'cv2.VideoCapture' objects} << has to happen
-360	0.343	0.001	0.343	0.001	 {method 'write' of '_io.FileIO' objects}
-1	0.144	0.144	10.153	10.153	 barry.py:3(<module>)
-165	0.126	0.001	0.126	0.001	 {built-in method marshal.loads}
-1827	0.111	0	0.111	0	 {method 'reduce' of 'numpy.ufunc' objects}
-87	0.106	0.001	0.339	0.004	 color_filter.py:48(get_block_pos)
-
-
-# Debug steps
-# comment out all potential slowdown code
-# run to record bare run
-# develop solid filter
-# test filter
-# profile code
-
-# Improvements to make
-# make rl_manager responsible for batch update
-# get better surface
-# test
-# make rl code more general
-# more granular block detection
-# code clean up
-
+# comment out all potential slowdown code >> DONE
+# run to record bare run >> DONE
+# develop solid filter >> DONE
+# test filter >> DONE
+# profile code >> DONE
+# make rl_manager responsible for batch update >> DONE
+# get better surface >> SKIPPED
+# test >> DONE
+# make rl code more general >> DONE
+# more granular block detection >> SKIPPED
+# code clean up >> DONE
 # figure out why rl doesn't always return an action >> DONE
 # return None for missing (display cross) >> DONE
 # figure out key interrupt >> DONE
