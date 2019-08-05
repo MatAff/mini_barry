@@ -18,7 +18,7 @@ filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
                  'day_light': [[39, 10, 39], [93, 125, 125]],
                  'night_light': [[39, 71, 39], [93, 221, 221]],
                  'night_light2': [[47,52,84],[90,165,254]],
-                 'blue': [[90,191,32],[106,255,197]]
+                 'blue': [[100,182,83],[107,255,241]]
                  }
 time_of_day = 'blue'
 min_mask_sum = 0
@@ -34,10 +34,10 @@ KEY_ESC = 27
 cam = Camera(filename)
 disp = Display('Barry', show_frame)
 disp_mask = Display('Barry2', show_frame)
-rec = Recorder('./barry.avi', 20, (320, 240), sparse=5)
-twist = Twist(forward=0.5, rotate_limit = 0.5)
+rec = Recorder('./barry.avi', 20, (320, 240), sparse=1)
+twist = Twist(forward=0.5)
 ada_drive = AdaDrive()
-fpss = FPS(5.0)
+fpss = FPS(1.0)
 c_filter = Filter(filter_values[time_of_day])
 rl = RLStateAction(100, layers=[75,50,25])
 
