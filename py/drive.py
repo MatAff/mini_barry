@@ -6,7 +6,7 @@ import numpy as np
 try:
      from adafruit_motorkit import MotorKit
 except ModuleNotFoundError:
-	print("adafruit_motorkit module not found, no motors will move")
+    print("adafruit_motorkit module not found, no motors will move")
 except NotImplementedError:
      print("Not running on correct board, no motors will move")
 
@@ -17,10 +17,9 @@ KEY_RIGHT = 83
 
 class Twist(object):
 
-    def __init__(self, forward=0.0, rotate=0.0, rotate_limit=None):
+    def __init__(self, forward=0.0, rotate=0.0):
         self.forward = forward
         self.rotate = rotate
-        self.rotate_limit = rotate_limit
 
     def to_string(self):
         return 'Twist: %.2f %.2f' % (self.forward, self.rotate)
@@ -33,8 +32,6 @@ class Twist(object):
         self.forward = forward
 
     def set_rotate(self, rotate):
-        if self.rotate_limit is not None:
-            self.rotate = np.clip(self.rotate, -self.rotate_limit, self.rotate_limit)
         self.rotate = rotate
 
     def man(self, key):
@@ -62,22 +59,22 @@ class AdaDrive(object):
         else:
             left = np.clip(left, -1.0, 1.0)
             right = np.clip(right, -1.0, 1.0)
-	        thresh = 0.0
-			# TODO: move duplicate code to separate function
-	        if abs(left)  > thresh :
-	            if self.kit.motor1.throttle != 0.0:
-	                self.kit.motor1.throttle = left
-	            else:
-	                self.kit.motor1.throttle = left/abs(left)
-	        else:
-	            self.kit.motor1.throttle = 0.0
-	        if abs(right) > thresh :
-	            if self.kit.motor2.throttle != 0.0:
-	                self.kit.motor2.throttle = right
-	            else:
-	                self.kit.motor2.throttle = right/abs(right)
-	        else:
-	            self.kit.motor2.throttle = 0.0
+            thresh = 0.0
+            # TODO: move duplicate code to separate function
+            if abs(left)  > thresh :
+                if self.kit.motor1.throttle != 0.0:
+                    self.kit.motor1.throttle = left
+                else:
+                    self.kit.motor1.throttle = left/abs(left)
+            else:
+                self.kit.motor1.throttle = 0.0
+            if abs(right) > thresh :
+                if self.kit.motor2.throttle != 0.0:
+                    self.kit.motor2.throttle = right
+                else:
+                    self.kit.motor2.throttle = right/abs(right)
+            else:
+                self.kit.motor2.throttle = 0.0
 
     def drive(self, twist):
         if twist.rotate < 0:
