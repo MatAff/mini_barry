@@ -60,6 +60,8 @@ class AdaDrive(object):
         if self.kit is None:
             return
         else:
+            left = np.clip(left, -1.0, 1.0)
+            right = np.clip(right, -1.0, 1.0)
 	        thresh = 0.0
 			# TODO: move duplicate code to separate function
 	        if abs(left)  > thresh :

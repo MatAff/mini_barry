@@ -12,14 +12,15 @@ run_on_pi = True
 show_frame = True
 filename = "../media/headlamp_06.avi"
 display_delay = 50
-rl_batch_size = 250
+rl_batch_size = 550
 filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
                  'day': [[42, 43, 41],[ 76, 193, 84]],
                  'day_light': [[39, 10, 39], [93, 125, 125]],
                  'night_light': [[39, 71, 39], [93, 221, 221]],
-                 'night_light2': [[47,52,84],[90,165,254]]
+                 'night_light2': [[47,52,84],[90,165,254]],
+                 'blue': [[90,191,32],[106,255,197]]
                  }
-time_of_day = 'night_light2'
+time_of_day = 'blue'
 min_mask_sum = 0
 
 if run_on_pi:
