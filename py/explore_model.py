@@ -3,6 +3,7 @@
 
 import pandas as pd
 import numpy as np
+from reinforcement_learning import create_model, review_history, review_prediction
 
 bf = pd.DataFrame(np.clip(rl.before_after, -1, 1))
 print(rl.before_after)
@@ -15,11 +16,11 @@ X = rl.all_states
 y = rl.all_actions
 print(X.shape)
 
-X = X[:400,]
-y = y[:400]
+#X = X[:250,]
+#y = y[:250]
 
 # split data
-n = 250
+n = 1200
 X_train = X[:n,]
 X_test = X[n:,]
 y_train = y[:n]
@@ -34,11 +35,11 @@ layers = rl.layers
 print(layers)
 
 # overwrite
-layers = [50, 10, 5]
+layers = [10, 5]
 
 # create model and train
 model_mimic = create_model((-1, 100), layers)
-history = model_mimic.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=10, batch_size=256, verbose=1)
+history = model_mimic.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=20, batch_size=256, verbose=1)
 
 # review training
 review_history(history)
