@@ -3,6 +3,7 @@
 
 import pandas as pd
 import numpy as np
+from reinforcement_learning import create_model, review_history, review_prediction
 
 bf = pd.DataFrame(np.clip(rl.before_after, -1, 1))
 print(rl.before_after)
@@ -63,5 +64,3 @@ def review_prediction_ols(model, X_train, y_train, X_test, y_test):
 
 df = review_prediction_ols(model_ols, X_train, y_train, X_test, y_test)
 
-
-model = model_ols
