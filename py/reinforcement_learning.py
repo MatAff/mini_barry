@@ -105,7 +105,8 @@ class RLStateAction(RLBase):
 
         # train model
         if run_nr == 1:
-            self.model_mimic.fit(self.all_states, self.all_actions, epochs=50, batch_size=256, verbose=0)
+            #self.model_mimic.fit(self.all_states, self.all_actions, epochs=50, batch_size=256, verbose=0)
+            self.model_mimic_ols = sm.OLS(self.all_actions, self.all_states).fit()
         if run_nr > 0:
             all_states_actions = np.append(self.all_states, np.array([self.all_actions]).transpose(), axis=1)
             self.model_state_action.fit(all_states_actions, self.all_discounted_rewards, epochs=10, batch_size=256, verbose=0)
@@ -119,6 +120,7 @@ class RLStateAction(RLBase):
             self.act = action
         if self.run_nr > 0:
             self.act_mimic = self.model_mimic.predict(np.array([state]))[0,0]
+            self.act_mimic = self.model_mimic_ols.predict(np.array([state]))[0]
             self.before_after = np.append(self.before_after, np.array([[action, self.act]]), axis=0)
         if self.run_nr > 0:
             pos_actions = np.arange(-0.25, 0.25, 0.05)
