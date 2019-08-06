@@ -119,9 +119,9 @@ class RLStateAction(RLBase):
         if self.run_nr == 0:
             self.act = action
         if self.run_nr > 0:
-            self.act_mimic = self.model_mimic.predict(np.array([state]))[0,0]
+            #self.act_mimic = self.model_mimic.predict(np.array([state]))[0,0]
             self.act_mimic = self.model_mimic_ols.predict(np.array([state]))[0]
-            self.before_after = np.append(self.before_after, np.array([[action, self.act]]), axis=0)
+            self.before_after = np.append(self.before_after, np.array([[action, self.act_mimic]]), axis=0)
         if self.run_nr > 0:
             pos_actions = np.arange(-0.25, 0.25, 0.05)
             val = np.empty((0,1))
