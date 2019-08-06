@@ -188,7 +188,7 @@ def click_filter(filename):
 
 ### MAIN ###
 
-filename = '../media/bl_01.avi'
+filename = '../media/bl_02.avi'
 all_imgs = pull_video_imgs(filename)
 
 select_imgs = random_imgs(all_imgs, 32)
@@ -197,7 +197,7 @@ resized_imgs = crop_imgs(resized_imgs)
 img = merge_images(resized_imgs, 8, 4)
 ranges = interactive_explore(img)
 
-ranges = [np.array([47,52,84]),np.array([90,165,254])]
+ranges = [np.array([100,182,83]),np.array([107,255,241])]
 
 select_imgs = random_imgs(all_imgs, 32)
 resized_imgs = resize_img_list(select_imgs, (320,240))

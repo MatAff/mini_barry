@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 import random
 import keras
 
@@ -23,6 +25,26 @@ def create_model(shape, layers=[10, 10], out=1, activation='relu'):
     model.add(keras.layers.Dense(out))
     model.compile(optimizer='rmsprop', loss='mse')
     return(model)
+
+def review_history(history):
+    history_dict = history.history
+    train_loss_values = history_dict['loss']
+    test_loss_values = history_dict['val_loss']
+    epochs = range(1, len(train_loss_values) + 1)
+    plt.plot(epochs, train_loss_values, 'bo', label='Training loss')
+    plt.plot(epochs, test_loss_values, 'b', label='Test loss')
+    plt.title('Training and test loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.show()
+
+def review_prediction(model, X_train, y_train, X_test, y_test):
+    predictions = model.predict(X_test)
+    df = pd.DataFrame({'x':predictions[:,0], 'y':y_test})
+    df.plot.scatter(x=0, y=1)
+    print(df.corr())
+    return df
 
 # Generic RI control class not specific to task at hand
 class RLBase(object):
@@ -81,10 +103,10 @@ class RLStateAction(RLBase):
 
         # train model
         if run_nr == 1:
-            self.model_mimic.fit(self.all_states, self.all_actions, epochs=2000, batch_size=256, verbose=0)
+            self.model_mimic.fit(self.all_states, self.all_actions, epochs=50, batch_size=256, verbose=0)
         if run_nr > 0:
             all_states_actions = np.append(self.all_states, np.array([self.all_actions]).transpose(), axis=1)
-            self.model_state_action.fit(all_states_actions, self.all_discounted_rewards, epochs=500, batch_size=256, verbose=0)
+            self.model_state_action.fit(all_states_actions, self.all_discounted_rewards, epochs=10, batch_size=256, verbose=0)
 
     def post(self):
         super(RLStateAction, self).post()

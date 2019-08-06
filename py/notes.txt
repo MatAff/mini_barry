@@ -1,5 +1,7 @@
 
 # ACTIONS
+# increase recording
+# increase fps display frequency
 # improve back up functionality (only back up if not enough pixels detected for several frames in a row)
 # try recording every frame
 # try different tape color

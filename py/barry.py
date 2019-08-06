@@ -8,11 +8,11 @@ from fps import FPS
 from reinforcement_learning import RLStateAction
 
 # settings
-run_on_pi = True
+run_on_pi = False
 show_frame = True
-filename = "../media/headlamp_06.avi"
-display_delay = 50
-rl_batch_size = 550
+filename = "../media/bl_04.avi"
+display_delay = 5
+rl_batch_size = 2000
 filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
                  'day': [[42, 43, 41],[ 76, 193, 84]],
                  'day_light': [[39, 10, 39], [93, 125, 125]],
@@ -27,7 +27,6 @@ if run_on_pi:
     show_frame = False
     filename = None
 
-# set constants
 KEY_ESC = 27
 
 # initialize objects
@@ -39,7 +38,7 @@ twist = Twist(forward=0.5)
 ada_drive = AdaDrive()
 fpss = FPS(1.0)
 c_filter = Filter(filter_values[time_of_day])
-rl = RLStateAction(100, layers=[75,50,25])
+rl = RLStateAction(100, layers=[10,5])
 
 # initialize variables
 running = True
@@ -91,7 +90,6 @@ while running:
             rl.pre(int(frame_count / rl_batch_size))
     frame_count += 1
 
-    # check status
     if key == KEY_ESC : running = False
 
 ada_drive.stop()
@@ -100,9 +98,8 @@ rec.release()
 disp.close()
 disp_mask.close()
 
-import pandas as pd
 
-bf = pd.DataFrame(rl.before_after)
-print(rl.before_after)
-bf.plot()
-bf.plot.scatter(x=0, y=1)
+
+
+
+
