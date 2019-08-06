@@ -9,7 +9,7 @@ import keras
 
 import statsmodels.api as sm
 
-
+##
 
 def discount_reward(rewards, discount):
     running_reward = 0.0
