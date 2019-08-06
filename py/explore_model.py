@@ -16,11 +16,11 @@ X = rl.all_states
 y = rl.all_actions
 print(X.shape)
 
-X = X[:400,]
-y = y[:400]
+#X = X[:400,]
+#y = y[:400]
 
 # split data
-n = 250
+n = 1250
 X_train = X[:n,]
 X_test = X[n:,]
 y_train = y[:n]

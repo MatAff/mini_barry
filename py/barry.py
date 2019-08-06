@@ -10,9 +10,9 @@ from reinforcement_learning import RLStateAction
 # settings
 run_on_pi = True
 show_frame = True
-filename = "../media/bl_04.avi"
+filename = "../media/bl_07.avi"
 display_delay = 5
-rl_batch_size = 2000
+rl_batch_size = 1500
 filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
                  'day': [[42, 43, 41],[ 76, 193, 84]],
                  'day_light': [[39, 10, 39], [93, 125, 125]],
