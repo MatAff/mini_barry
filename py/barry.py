@@ -8,7 +8,7 @@ from fps import FPS
 from reinforcement_learning import RLStateAction
 
 # settings
-run_on_pi = False
+run_on_pi = True
 show_frame = True
 filename = "../media/bl_04.avi"
 display_delay = 5
