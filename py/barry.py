@@ -8,9 +8,9 @@ from fps import FPS
 from reinforcement_learning import RLStateAction
 
 # settings
-run_on_pi = False
+run_on_pi = True
 show_frame = True
-filename = "../media/bl_05.avi"
+filename = "../media/bl_04.avi"
 display_delay = 5
 rl_batch_size = 2000
 filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
