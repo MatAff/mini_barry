@@ -35,7 +35,7 @@ layers = rl.layers
 print(layers)
 
 # overwrite
-layers = [50, 10, 5]
+layers = []
 
 # create model and train
 model_mimic = create_model((-1, 100), layers)
