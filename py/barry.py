@@ -3,7 +3,7 @@
 import signal
 from visual import Camera, Display, Recorder
 from color_filter import Filter
-from drive import Twist, AdaDrive
+from drive import Twist, Reverse, AdaDrive
 from fps import FPS
 from reinforcement_learning import RLStateAction
 
@@ -21,7 +21,7 @@ filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
                  'blue': [[100,182,83],[107,255,241]]
                  }
 time_of_day = 'blue'
-min_mask_sum = 0
+min_mask_sum = 50
 
 if run_on_pi:
     show_frame = False
@@ -35,6 +35,7 @@ disp = Display('Barry', show_frame)
 disp_mask = Display('Barry2', show_frame)
 rec = Recorder('./barry.avi', 20, (320, 240), sparse=1)
 twist = Twist(forward=0.5)
+rev = Reverse(10,30)
 ada_drive = AdaDrive()
 fpss = FPS(1.0)
 c_filter = Filter(filter_values[time_of_day])
@@ -70,10 +71,10 @@ while running:
     twist.set_rotate(rotate)
 
     # reverse if no line
-    if mask.sum() < min_mask_sum : twist.set(-0.55, 0.05)
+    if rev.update(mask.sum() < min_mask_sum): twist.set(-0.55, 0.05)
 
     # drive
-    ada_drive.drive(twist) # not available on laptop
+    ada_drive.drive(twist)
     twist.set_forward(0.35)
 
     # display and record

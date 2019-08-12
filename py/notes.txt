@@ -1,7 +1,9 @@
 
 # ACTIONS
-# figure out what's going on with the different models
-# improve back up functionality (only back up if not enough pixels detected for several frames in a row)
+# Try linear regression model for RL
+# improve back up functionality
+# test back up using recording
+# handle interaction between reverser and rl module
 
 
 # HOLD

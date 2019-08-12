@@ -45,6 +45,30 @@ class Twist(object):
         E = (int(320 - self.rotate * 100), 240)
         return S, E
 
+class Reverse(object):
+
+    def __init__(self, thress, active_thress):
+        self.count = 0
+        self.active = False
+        self.thress = thress
+        self.active_thress = active_thress
+
+    def update(self, b):
+        if self.active == False:
+            if b:
+                self.count += 1
+            else:
+                self.count = 0
+            if self.count > self.thress:
+                self.active = True
+                self.count = 0
+        if self.active:
+            self.count += 1
+            if self.count > self.active_thress or b:
+                self.active = False
+                self.count = 0
+        return self.active
+
 class AdaDrive(object):
 
     def __init__(self):
