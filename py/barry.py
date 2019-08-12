@@ -71,7 +71,12 @@ while running:
     twist.set_rotate(rotate)
 
     # reverse if no line
-    if rev.update(mask.sum() < min_mask_sum): twist.set(-0.55, 0.05)
+    print(rev.count)
+    b = mask.sum() < min_mask_sum
+    print(b)
+    if rev.update(mask.sum() < min_mask_sum):
+        twist.set(-0.55, 0.05)
+        print('reversing!')
 
     # drive
     ada_drive.drive(twist)

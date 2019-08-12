@@ -68,7 +68,7 @@ class RLBase(object):
         self.actions = np.empty((0,1))
         self.rewards = np.empty((0,1))
         self.err = 0.0 # Set error
-        self.err_discount = 0.9
+        self.err_discount = 0.95
 
     def post(self):
         self.run_nr += 1

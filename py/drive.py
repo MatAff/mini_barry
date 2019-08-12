@@ -64,7 +64,8 @@ class Reverse(object):
                 self.count = 0
         if self.active:
             self.count += 1
-            if self.count > self.active_thress or b:
+            if not b: self.count +=5
+            if self.count > self.active_thress:
                 self.active = False
                 self.count = 0
         return self.active
