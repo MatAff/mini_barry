@@ -4,11 +4,8 @@
 import cv2
 import time
 import numpy as np
-import pandas as pd
 import math
 import matplotlib.pyplot as plt
-import random
-import keras
 from reinforcement_learning import RLStateAction
 
 # Keys
@@ -188,13 +185,14 @@ rec_run = [0,1,2,5,10,20,50]
 
 # Run settings
 nr_runs = 10000
-frames_per_run = 1000
+frames_per_run = 500
 running = True
 
 # Instantiate sim and control elements
 course = Course()
 dist_list = [0.5, 1.0, 1.5, 2.0, 2.5]
-control = RLStateAction(len(dist_list), layers=[10,5])
+model_param = { 'method':'reg', 'layers':[10,5] }
+rl = RLStateAction((len(dist_list),), model_param)
 
 # Loop through runs
 for run in range(nr_runs):
@@ -202,9 +200,7 @@ for run in range(nr_runs):
     # Reset
     print(run)
     car = Car()
-
-    # Control
-    control.pre(run)
+    rl.pre(run)
 
     # Recored
     filename = './run_%03i.avi' % run
@@ -242,7 +238,7 @@ for run in range(nr_runs):
 
             # Decide
             rotate = line_pos[1] * 0.1
-            rotate = control.decide(line_pos, reward, rotate)
+            rotate = rl.decide(line_pos, reward, rotate)
 
             # Act
             car.move(0.2, rotate)
@@ -254,11 +250,11 @@ for run in range(nr_runs):
             break
 
     # Control
-    control.post()
+    rl.post()
 
     # Plot
-    plt.plot(control.mean_reward_list)
-    plt.show()
+    #plt.plot(rl.mean_reward_list)
+    #plt.show()
 
     # Recorder
     rec.release()

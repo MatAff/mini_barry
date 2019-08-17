@@ -12,16 +12,12 @@ run_on_pi = False
 show_frame = True
 filename = "../media/bl_07.avi"
 display_delay = 5
-rl_batch_size = 1500
-filter_values = {'dusk': [[33, 42, 30],[ 98, 178, 70]],
-                 'day': [[42, 43, 41],[ 76, 193, 84]],
-                 'day_light': [[39, 10, 39], [93, 125, 125]],
-                 'night_light': [[39, 71, 39], [93, 221, 221]],
-                 'night_light2': [[47,52,84],[90,165,254]],
-                 'blue': [[100,182,83],[107,255,241]]
-                 }
+rl_batch_size = 100
+filter_values = { 'blue': [[100,182,83],[107,255,241]] }
 time_of_day = 'blue'
 min_mask_sum = 50
+mimic_param = { 'method':'reg', 'layers':[10,5] }
+state_action_param = { 'method':'nn', 'layers':[10,5] }
 
 if run_on_pi:
     show_frame = False
@@ -39,7 +35,7 @@ rev = Reverse(10,30)
 ada_drive = AdaDrive()
 fpss = FPS(1.0)
 c_filter = Filter(filter_values[time_of_day])
-rl = RLStateAction(100, layers=[10,5])
+rl = RLStateAction((5, 20), mimic_param, state_action_param)
 
 # initialize variables
 running = True
@@ -62,18 +58,15 @@ while running:
 
     # apply filter
     mask = c_filter.apply_small(frame)
-    mask_flat = mask.flatten()
     reward = mask[2,9:12].sum() + mask[2,10:11].sum()
 
     # set twist
     rotate = c_filter.row_pos(mask)[3] * -0.45
-    rotate = rl.decide(mask_flat, reward, rotate)
+    rotate = rl.decide(mask, reward, rotate)
     twist.set_rotate(rotate)
 
     # reverse if no line
-    print(rev.count)
     b = mask.sum() < min_mask_sum
-    print(b)
     if rev.update(mask.sum() < min_mask_sum):
         twist.set(-0.55, 0.05)
         print('reversing!')

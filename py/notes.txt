@@ -1,15 +1,28 @@
 
 # ACTIONS
+# remove run_nr in RLStateAction
+# test on Barry
+# add convolutional model
+# do data preprocessing as part of model
 # Try linear regression model for RL
-# improve back up functionality
-# test back up using recording
 # handle interaction between reverser and rl module
-
 
 # HOLD
 # Train on separate thread
 
 # COMPLETED ACTIONS
+# add state action back in >> DONE
+# test in simulation >> DONE
+# refactor simulation to work with new RL classes >> DONE
+# fix [] >> DONE
+# turn modeling into none static class >> DONE
+# test on video >> DONE
+# figure out how to do higher dimensions with sequential neural nets >> DONE
+# separate ml method from rl class >> DONE
+# store data in it's original format >> DONE
+# Create rl base that can handle any shape data >> DONE
+# test back up using recording >> DONE
+# improve back up functionality >> Kinda
 # increase fps display frequency >> DONE
 # try different tape color >> DONE (works great)
 # increase recording >> DONE (does not appear to affect fps too much)
