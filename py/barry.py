@@ -18,6 +18,7 @@ time_of_day = 'blue'
 min_mask_sum = 50
 mimic_param = { 'method':'reg', 'layers':[10,5] }
 state_action_param = { 'method':'nn', 'layers':[10,5] }
+#state_action_param = { 'method':'cnn' }
 
 if run_on_pi:
     show_frame = False
