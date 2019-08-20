@@ -12,11 +12,11 @@ run_on_pi = False
 show_frame = True
 filename = "../media/bl_07.avi"
 display_delay = 5
-rl_batch_size = 100
+rl_batch_size = 1000
 filter_values = { 'blue': [[100,182,83],[107,255,241]] }
 time_of_day = 'blue'
 min_mask_sum = 50
-mimic_param = { 'method':'reg', 'layers':[10,5] }
+mimic_param = { 'method':'nn', 'layers':[10,5] }
 state_action_param = { 'method':'nn', 'layers':[10,5] }
 #state_action_param = { 'method':'cnn' }
 
@@ -36,7 +36,8 @@ rev = Reverse(10,30)
 ada_drive = AdaDrive()
 fpss = FPS(1.0)
 c_filter = Filter(filter_values[time_of_day])
-rl = RLStateAction((5, 20), mimic_param, state_action_param)
+#rl = RLStateAction((5, 20), mimic_param, state_action_param)
+rl = RLStateAction((5, ), mimic_param, state_action_param)
 
 # initialize variables
 running = True
@@ -57,20 +58,22 @@ while running:
     frame = cam.get()
     fpss.update(verbose=True)
 
-    # apply filter
+    # features
     mask = c_filter.apply_small(frame)
     reward = mask[2,9:12].sum() + mask[2,10:11].sum()
+    row_pos = c_filter.row_pos(mask)
 
     # set twist
-    rotate = c_filter.row_pos(mask)[3] * -0.45
-    rotate = rl.decide(mask, reward, rotate)
-    twist.set_rotate(rotate)
+    rotate = row_pos[3] * -0.45
 
     # reverse if no line
     b = mask.sum() < min_mask_sum
     if rev.update(mask.sum() < min_mask_sum):
         twist.set(-0.55, 0.05)
         print('reversing!')
+    else:
+        rotate = rl.decide(row_pos, reward, rotate)
+        twist.set_rotate(rotate)
 
     # drive
     ada_drive.drive(twist)
