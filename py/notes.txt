@@ -2,14 +2,15 @@
 # ACTIONS
 # remove run_nr in RLStateAction
 # test on Barry
-# add convolutional model
 # Try linear regression model for RL
-# handle interaction between reverser and rl module
 
 # HOLD
 # Train on separate thread
 
 # COMPLETED ACTIONS
+# reduce feature space >> DONE
+# handle interaction between reverser and rl module >> DONE
+# add convolutional model >> DONE
 # do data preprocessing as part of model >> DONE
 # add state action back in >> DONE
 # test in simulation >> DONE

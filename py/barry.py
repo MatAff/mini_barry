@@ -10,7 +10,7 @@ from reinforcement_learning import RLStateAction
 # settings
 run_on_pi = False
 show_frame = True
-filename = "../media/bl_07.avi"
+filename = "../media/bl_08.avi"
 display_delay = 5
 rl_batch_size = 1000
 filter_values = { 'blue': [[100,182,83],[107,255,241]] }
@@ -60,7 +60,9 @@ while running:
 
     # features
     mask = c_filter.apply_small(frame)
-    reward = mask[2,9:12].sum() + mask[2,10:11].sum()
+    reward = mask[2,0:20].sum() + mask[2,1:19].sum() + mask[2,2:18].sum() + mask[2,3:17].sum() +
+             mask[2,4:16].sum() + mask[2,5:15].sum() + mask[2,6:14].sum() + mask[2,7:13].sum() +
+             mask[2,8:12].sum() + mask[2,9:11].sum()
     row_pos = c_filter.row_pos(mask)
 
     # set twist
