@@ -95,8 +95,9 @@ class RLStateAction(RLBase):
         if self.run_nr > 0:
             rl_action = rl_action_mimic
         if self.run_nr > 1:
-            p = np.min([(self.run_nr - 1.0) / 20.0, 1.0])
-            rl_action = (1 - p) * rl_action_mimic + p * rl_action_state_action
+            rl_action = rl_action_state_action
+            #p = np.min([(self.run_nr - 1.0) / 20.0, 1.0])
+            #rl_action = (1 - p) * rl_action_mimic + p * rl_action_state_action
 
         print(np.round(action, 3), " >> ", np.round(rl_action, 3))
         super(RLStateAction, self).store_action(rl_action)
