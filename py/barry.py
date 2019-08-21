@@ -60,9 +60,9 @@ while running:
 
     # features
     mask = c_filter.apply_small(frame)
-    reward = mask[2,0:20].sum() + mask[2,1:19].sum() + mask[2,2:18].sum() + mask[2,3:17].sum() +
-             mask[2,4:16].sum() + mask[2,5:15].sum() + mask[2,6:14].sum() + mask[2,7:13].sum() +
-             mask[2,8:12].sum() + mask[2,9:11].sum()
+    reward = (mask[2,0:20].sum() + mask[2,1:19].sum() + mask[2,2:18].sum() + mask[2,3:17].sum() +
+              mask[2,4:16].sum() + mask[2,5:15].sum() + mask[2,6:14].sum() + mask[2,7:13].sum() +
+              mask[2,8:12].sum() + mask[2,9:11].sum())
     row_pos = c_filter.row_pos(mask)
 
     # set twist
