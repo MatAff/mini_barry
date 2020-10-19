@@ -12,14 +12,21 @@ class EngineeredControl(object):
             print(e)
             return {'forward': 0.5, 'rotate': 0.0}
 
+
 class TestDrive(object):
 
     def __init__(self):
-        pass
+        self.count = 0
 
     def decide(self, line_pos):
-        raise NotImplementedError()
-
+        if self.count > 25:
+            self.count = 0
+        self.count += 1
+        if self.count < 20:
+            return {'forward': 0.1, 'rotate': 0.0}
+        else:
+            return {'forward': 0.1, 'rotate': 0.2}
+    
 
 class RL(object):
 

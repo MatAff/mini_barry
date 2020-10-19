@@ -4,28 +4,39 @@ import numpy as np
 
 import cv2
 
-scale = 30
 
-def to_pixel(cart):
-    # convert cartesian coordinate into pixel coordinates
-    S = np.array([scale, -scale])
-    T = np.array([320, 480 - 80])
-    return(tuple((cart * S + T).astype(int)))
-
-def draw_line(frame, points, color):
-    for i in range(points.shape[0] - 1):
-        s_pix = to_pixel(points[i+0,:])
-        e_pix = to_pixel(points[i+1,:])
-        try:
-            cv2.line(frame, s_pix, e_pix,color,2)
-        except Exception as e:
-            print(points)
-            print(s_pix, e_pix)
-            raise e
-
-def rotation(rad):
+def rotate(rad):
     return(np.matrix([[math.cos(rad), -math.sin(rad)],
                       [math.sin(rad),  math.cos(rad)]]))
+
+class Draw:
+
+    scale = None
+    width, height = None, None
+
+    @staticmethod
+    def set_param(scale, width, height):
+        Draw.scale = scale
+        Draw.width, Draw.height = width, height
+
+    @staticmethod
+    def to_pixel(cart):
+        # convert cartesian coordinate into pixel coordinates
+        S = np.array([Draw.scale, -Draw.scale])
+        T = np.array([Draw.width / 2, Draw.height * 0.90])
+        return(tuple((cart * S + T).astype(int)))
+
+    @staticmethod
+    def draw_line(frame, points, color):
+        for i in range(points.shape[0] - 1):
+            s_pix = Draw.to_pixel(points[i+0,:])
+            e_pix = Draw.to_pixel(points[i+1,:])
+            try:
+                cv2.line(frame, s_pix, e_pix,color,2)
+            except Exception as e:
+                print(points)
+                print(s_pix, e_pix)
+                raise e
 
 
 class Line(object):
@@ -76,9 +87,9 @@ class Course(object):
 
     def __init__(self):
         line_list = []
-        sections = [Line(np.array([0,0]), np.array([1,0])),
-                    Line(np.array([5,5]), np.array([4,6.5])),
-                    Line(np.array([-4,6]), np.array([-5,5]))]
+        sections = [Line(np.array([0,0]), np.array([10,0])),
+                    Line(np.array([50,50]), np.array([40,65.])),
+                    Line(np.array([-40,60]), np.array([-50,50]))]
 
         for i, sect in enumerate(sections):
             spline = Spline(sections[i-1], sect, 25)
@@ -88,7 +99,7 @@ class Course(object):
         self.points = np.concatenate(line_list)
 
     def draw(self, frame):
-        draw_line(frame, self.points, (255,0,0))
+        Draw.draw_line(frame, self.points, (255,0,0))
 
 
 class Car(object):
@@ -102,30 +113,31 @@ class Car(object):
         x = act_dict['forward']
         rad = act_dict['rotate']
         self.pos = self.pos + x * self.dir * 0.5
-        self.dir = np.matmul(rotation(rad), self.dir)
+        self.dir = np.matmul(rotate(rad), self.dir)
         self.pos = self.pos + x * self.dir * 0.5
 
     def draw(self, frame):
-        tl = self.pos + np.matmul(rotation(math.pi *  0.5), self.dir * 0.3)
-        tr = self.pos + np.matmul(rotation(math.pi * -0.5), self.dir * 0.3)
-        bl = self.pos - self.dir + np.matmul(rotation(math.pi *  0.5), self.dir * 0.3)
-        br = self.pos - self.dir + np.matmul(rotation(math.pi * -0.5), self.dir * 0.3)
-        points = np.array(np.concatenate([tl, tr, br, bl, tl, br, bl, tr], axis=1).transpose())
-        draw_line(frame, points, (0,0,255))
+        tl = self.pos + np.matmul(rotate(math.pi *  0.5), self.dir * 3)
+        tr = self.pos + np.matmul(rotate(math.pi * -0.5), self.dir * 3)
+        bl = self.pos - self.dir * 10 + np.matmul(rotate(math.pi *  0.5), self.dir * 3)
+        br = self.pos - self.dir * 10 + np.matmul(rotate(math.pi * -0.5), self.dir * 3)
+        concat = np.concatenate([tl, tr, br, bl, tl, br, bl, tr], axis=1)
+        points = np.array(concat.transpose())
+        Draw.draw_line(frame, points, (0,0,255))
 
     def detect(self, points, frame, dist):
 
-        # Create detection line
-        sp = self.pos + np.matmul(rotation(math.pi * -0.25), self.dir * dist)
-        ep = self.pos + np.matmul(rotation(math.pi *  0.25), self.dir * dist)
+        # create detection line
+        sp = self.pos + np.matmul(rotate(math.pi *  0.25), self.dir * dist)
+        ep = self.pos + np.matmul(rotate(math.pi * -0.25), self.dir * dist)
         sp = np.squeeze(np.array(sp))
         ep = np.squeeze(np.array(ep))
         detect_line = Line(sp, ep)
 
-        # Draw detection line
-        draw_line(frame, detect_line.points, (0,200,0))
+        # draw detection line
+        Draw.draw_line(frame, detect_line.points, (0,200,0))
 
-        # Loop through course
+        # loop through course
         for i in range(points.shape[0] - 1):
             sub_line = Line(points[i,:], points[i+1,:])
             inters, has_intersect, overlap = detect_line.intersect(sub_line)
