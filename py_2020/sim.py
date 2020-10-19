@@ -49,7 +49,7 @@ while running:
     key = display.show(frame)
     running = (key != KEY_ESC)
     recorder.write(frame)
-    fps.get_fps()
+    fps.get_fps(True)
 
 recorder.release()
 display.close()

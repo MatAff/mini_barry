@@ -52,14 +52,17 @@ class RL(object):
 
     def decide(self, line_pos):
 
-        # compute cost
-        # TODO: create and implement cost function
+        # compute reward
+        if line_pos[0] is not None:
+            reward = abs(line_pos[0])
+        else:
+            reward = 10
+        print(f'reward: {reward}')
 
         # store state and cost
         self.state = np.append(self.state, [line_pos], axis=0)
+        self.reward = np.append(self.reward, reward)
         
-        # TODO: implement storing reward and action
-
         # update count and cycle
         self.count += 1
         if self.count % self.cycle_size == 0:
@@ -72,9 +75,10 @@ class RL(object):
             act_dict =  self.initial_controller.decide(line_pos)
         else:
             res = model.predict(line_pos)
-            act_dict = {'forward': res[0], 'rotatae': res[1]}
+            act_dict = {'forward': res[0], 'rotate': res[1]}
 
         # store action
-        # TODO: implement storing action
+        action = [act_dict['forward'], act_dict['rotate']]
+        self.action = np.append(self.action, action)
 
         return act_dict
