@@ -4,7 +4,7 @@ import numpy as np
 
 import cv2
 
-from control import EngineeredControl, TestDrive
+from control import EngineeredControl, TestDrive, RL
 from fps import FPS
 from sim_elements import Course, Car, Draw
 from visual import Display, Recorder
@@ -13,16 +13,20 @@ KEY_ESC = 27
 
 fps = FPS(20.0)
 
+# initialize visual elements
 width, height = 320, 240
 display = Display('sim', True)
 recorder = Recorder('sim.avi', 30, (width, height))
 
-Draw.set_param(2, 320, 240)
+# initialize simulation related element
+Draw.set_param(2, width, height)
 course = Course()
-car = Car(dist_list=[5, 10, 20, 40])
+car = Car(dist_list=[5, 10, 20, 40, 80])
 
+# initialize controller
 # controller = EngineeredControl()
-controller = TestDrive()
+# controller = TestDrive()
+controller = RL()
 
 running = True
 while running:
