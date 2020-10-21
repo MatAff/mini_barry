@@ -14,19 +14,20 @@ KEY_ESC = 27
 fps = FPS(20.0)
 
 # initialize visual elements
-width, height = 320, 240
+width, height = 640, 480
 display = Display('sim', True)
 recorder = Recorder('sim.avi', 30, (width, height))
 
 # initialize simulation related element
-Draw.set_param(2, width, height)
+Draw.set_param(4, width, height)
 course = Course()
-car = Car(dist_list=[5, 10, 20, 40, 80])
+dist_list = [5, 10, 20, 40, 80]
+car = Car(dist_list)
 
 # initialize controller
 # controller = EngineeredControl()
 # controller = TestDrive()
-controller = RL()
+controller = RL(len(dist_list))
 
 running = True
 while running:
@@ -49,7 +50,7 @@ while running:
     key = display.show(frame)
     running = (key != KEY_ESC)
     recorder.write(frame)
-    fps.get_fps(True)
+    fps.get_fps(verbose=False)
 
 recorder.release()
 display.close()
