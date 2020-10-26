@@ -1,6 +1,7 @@
 
 import numpy as np
 import scipy.stats
+import threading
 
 from modeling import NeuralNet
 
@@ -70,7 +71,7 @@ class RL(object):
         self.ret = Retainer(np.zeros(l)) 
 
     @staticmethod
-    def discount_rewards(rewards, discount=0.05):
+    def discount_rewards(rewards, discount=0.5):
         running_reward = 0.0
         discounted_rewards = np.array([], 'float')
         for i in reversed(range(rewards.shape[0])):
@@ -87,12 +88,12 @@ class RL(object):
         X = np.append(self.state, self.action, axis=1)
         y = self.discounted_rewards
 
-        print(X.shape)
-        print(y.shape)
+        # print(X.shape)
+        # print(y.shape)
 
         # create model
         self.model = NeuralNet()
-        self.model.create(X.shape, [10,10,5])
+        self.model.create(X.shape, [20,20,5])
         self.model.train(X, y)
 
         # review training history
@@ -100,42 +101,53 @@ class RL(object):
   
     def use_model(self, line_pos):
 
-        def pred(x, mu, sd):
-            p = self.model.predict(np.array([np.append(line_pos, [0.2, x])]))
-            prob = scipy.stats.norm(mu, sd).pdf(x)
-            return p / prob
+        mu = self.action.mean(axis=0)[1]
+        sd = self.action.std(axis=0)[1]
 
-        mu = self.action.mean(axis=0)
-        sd = self.action.std(axis=0)
+        line_pos = np.append(line_pos, [0.2])
+        rotate_range = np.arange(-0.05, 0.05, 0.01)
+        res = np.repeat([line_pos], len(rotate_range), axis=0)
+        res = np.append(res, np.array([rotate_range]).T, axis=1)
 
-        rotate_range = np.arange(-0.5, 0.5, 0.05)
-        props = [pred(r, mu[1], sd[1]) for r in rotate_range]
+        pred = self.model.predict(res)
+        prob = scipy.stats.norm(mu, sd).pdf(rotate_range)
+
+        props = pred # / prob
 
         return rotate_range[np.argmin(props)]
 
+    def compute_reward(self, line_pos, retained_pos):
+
+        reward = 0 
+        for pos in range(len(line_pos)):
+            if line_pos[pos] is None:
+                pos_reward = 10
+            else:
+                pos_reward = abs(line_pos[pos])
+            reward += pos_reward**(1/(pos + 1))
+
+        return reward
+
     def decide(self, line_pos, verbose=False):
 
-        # compute reward
-        if line_pos[0] is not None:
-            reward = abs(line_pos[0])
-        else:
-            reward = 10
-
         # retainer
-        line_pos = self.ret.retain(np.array(line_pos)) # insert retained values
+        retained_pos = self.ret.retain(np.array(line_pos)) # insert retained values
+
+        # compute reward
+        reward = self.compute_reward(line_pos, retained_pos)
 
         # decide
         if self.model is None:
-            act_dict =  self.initial_controller.decide(line_pos)
+            act_dict =  self.initial_controller.decide(retained_pos)
         else:
-            if np.random.rand() < (self.cycle / 1000):
-                res = self.use_model(line_pos)
+            if np.random.rand() < (self.cycle / 3):
+                res = self.use_model(retained_pos)
                 act_dict = {'forward': 0.2, 'rotate': res}
             else:
-                act_dict =  self.initial_controller.decide(line_pos)
+                act_dict =  self.initial_controller.decide(retained_pos)
 
         # store state, reward, and action
-        self.state = np.append(self.state, [line_pos], axis=0)
+        self.state = np.append(self.state, [retained_pos], axis=0)
         self.reward = np.append(self.reward, reward)
         action = [act_dict['forward'], act_dict['rotate']]
         self.action = np.append(self.action, [action], axis=0)
@@ -145,9 +157,9 @@ class RL(object):
         if self.count % self.cycle_size == 0:
             self.cycle += 1
 
-            print(self.state.shape)
-            print(self.reward.shape)
-            print(self.action.shape)
+            # print(self.state.shape)
+            # print(self.reward.shape)
+            # print(self.action.shape)
 
             self.create_model()
 
