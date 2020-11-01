@@ -57,6 +57,7 @@ class NeuralNet(object):
         plt.legend()
         plt.show()
 
+    @staticmethod
     def review_prediction(model, X_train, y_train, X_test, y_test):
         predictions = model.predict(X_test)
         df = pd.DataFrame({'x':predictions[:,0], 'y':y_test})

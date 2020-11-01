@@ -1,5 +1,7 @@
 
+import copy
 import numpy as np
+from queue import Queue
 import scipy.stats
 import threading
 
@@ -70,6 +72,9 @@ class RL(object):
         # retainer
         self.ret = Retainer(np.zeros(l)) 
 
+        # queue
+        self.que = Queue()
+
     @staticmethod
     def discount_rewards(rewards, discount=0.5):
         running_reward = 0.0
@@ -78,6 +83,13 @@ class RL(object):
             discounted_rewards = np.concatenate(([running_reward], discounted_rewards))
             running_reward = running_reward * discount + rewards[i] * (1 - discount)
         return discounted_rewards
+
+    @staticmethod
+    def thread_train_model(X, y):
+        model = NeuralNet()
+        model.create(X.shape, [20,20,5])
+        model.train(X, y)
+        return model
 
     def create_model(self):
 
@@ -88,21 +100,21 @@ class RL(object):
         X = np.append(self.state, self.action, axis=1)
         y = self.discounted_rewards
 
-        # print(X.shape)
-        # print(y.shape)
+        # # train not on thread
+        # model = RL.thread_train_model(X, y)
+        # self.que.put(model)
 
-        # create model
-        self.model = NeuralNet()
-        self.model.create(X.shape, [20,20,5])
-        self.model.train(X, y)
+        # train on thread
+        t = threading.Thread(target=lambda q, X, y: q.put(RL.thread_train_model(X, y)), args=(self.que, X, y))
+        t.start()
 
         # review training history
         # self.model.review_history() # TODO: figure out how to get this to work
   
     def use_model(self, line_pos):
 
-        mu = self.action.mean(axis=0)[1]
-        sd = self.action.std(axis=0)[1]
+        # mu = self.action.mean(axis=0)[1]
+        # sd = self.action.std(axis=0)[1]
 
         line_pos = np.append(line_pos, [0.2])
         rotate_range = np.arange(-0.05, 0.05, 0.01)
@@ -110,7 +122,7 @@ class RL(object):
         res = np.append(res, np.array([rotate_range]).T, axis=1)
 
         pred = self.model.predict(res)
-        prob = scipy.stats.norm(mu, sd).pdf(rotate_range)
+        # prob = scipy.stats.norm(mu, sd).pdf(rotate_range)
 
         props = pred # / prob
 
@@ -141,7 +153,9 @@ class RL(object):
             act_dict =  self.initial_controller.decide(retained_pos)
         else:
             if np.random.rand() < (self.cycle / 3):
+                print('trying')
                 res = self.use_model(retained_pos)
+                print('working')
                 act_dict = {'forward': 0.2, 'rotate': res}
             else:
                 act_dict =  self.initial_controller.decide(retained_pos)
@@ -156,11 +170,11 @@ class RL(object):
         self.count += 1
         if self.count % self.cycle_size == 0:
             self.cycle += 1
-
-            # print(self.state.shape)
-            # print(self.reward.shape)
-            # print(self.action.shape)
-
             self.create_model()
+
+        # check queue for models
+        if not self.que.empty():
+            self.model = self.que.get()
+            # self.model.model._make_predict_function()
 
         return act_dict
