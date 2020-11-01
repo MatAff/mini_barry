@@ -15,8 +15,7 @@ y = np.random.rand(10,)
 que = Queue()
 
 
-# train model function
-def train_model(X, y):
+def create_model(X, y):
 
     activation='relu'
     out = 1
@@ -25,6 +24,14 @@ def train_model(X, y):
     model.add(keras.layers.Dense(10, activation=activation, input_shape=(X.shape[1:])))
     model.add(keras.layers.Dense(out))
     model.compile(optimizer='rmsprop', loss='mse')
+
+    return model
+
+
+# train model function
+def train_model(model, X, y):
+
+    model = create_model(X, y)
 
     epochs=50
     batch_size=256
@@ -35,20 +42,32 @@ def train_model(X, y):
 
     return model
 
+
+def train_model_weights(model, X, y):
+    return train_model(model, X, y).get_weights()
+
+
+model = create_model(X, y)
+
 # # train not on thread
-# model = train_model(X, y)
-# que.put(model)
+# que.put(train_model_weights(model, X, y))
 
 # train on thread
-t = threading.Thread(target=lambda q, X, y: q.put(train_model(X, y)), args=(que, X, y))
+t = threading.Thread(target=lambda q, m, X, y: q.put(train_model_weights(m, X, y)), args=(que, model, X, y))
 t.start()
 
 while que.empty():
     time.sleep(1)
 
-model = que.get()
+weights = que.get()
+print(weights)
+
+# model = create_model(X, y)
+model.set_weights(weights)
 
 # use mode to predict
 res = model.predict(X)
 
 print(res)
+
+#  w = model.get_weights(), send the list of numpy arrays to the Queue, and then model.set_weights(w)
