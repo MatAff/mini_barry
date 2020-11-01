@@ -14,19 +14,21 @@ y = np.random.rand(10,)
 
 que = Queue()
 
+
 # train model function
 def train_model(X, y):
-    activation='relu'
-    epochs=50
-    batch_size=256
-    verbose=0
-    out = 1
 
-    # define model
+    activation='relu'
+    out = 1
+    
     model = keras.Sequential()
     model.add(keras.layers.Dense(10, activation=activation, input_shape=(X.shape[1:])))
     model.add(keras.layers.Dense(out))
     model.compile(optimizer='rmsprop', loss='mse')
+
+    epochs=50
+    batch_size=256
+    verbose=0
 
     # train
     model.fit(X, y, epochs=epochs, batch_size=batch_size, verbose=verbose)
