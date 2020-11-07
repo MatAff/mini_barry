@@ -40,13 +40,13 @@ class TestDrive(object):
         self.count = 0
 
     def decide(self, line_pos):
-        if self.count > 25:
+        if self.count > 15:
             self.count = 0
         self.count += 1
-        if self.count < 20:
-            return {'forward': 0.1, 'rotate': 0.0}
+        if self.count < 10:
+            return {'forward': 0.6, 'rotate': 0.0}
         else:
-            return {'forward': 0.1, 'rotate': 0.2}
+            return {'forward': 0.6, 'rotate': 0.2}
     
 
 class RL(object):

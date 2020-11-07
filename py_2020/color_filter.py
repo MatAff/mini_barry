@@ -2,6 +2,7 @@
 
 import cv2
 import numpy as np
+import unittest
 
 
 class Filter(object):
@@ -21,7 +22,7 @@ def frame_to_line_pos(frame, filter):
 
     # create small mask
     frame_lower = frame[120:240, 0:320] # crop
-    mask_lower = filter.apply(lower_frame)
+    mask_lower = filter.apply(frame_lower)
     mask_lower_small = mask_lower.reshape(5, 24, 20, 16).mean(axis=(1,3)) # reduce size
 
     # return max positions
