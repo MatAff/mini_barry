@@ -8,11 +8,11 @@ from fps import FPS
 from reinforcement_learning import RLStateAction
 
 # settings
-run_on_pi = False
+run_on_pi = True
 show_frame = True
 filename = "../media/bl_08.avi"
 display_delay = 5
-rl_batch_size = 1000
+rl_batch_size = 500
 filter_values = { 'blue': [[100,182,83],[107,255,241]] }
 time_of_day = 'blue'
 min_mask_sum = 50
@@ -32,7 +32,7 @@ disp = Display('Barry', show_frame)
 disp_mask = Display('Barry2', show_frame)
 rec = Recorder('./barry.avi', 20, (320, 240), sparse=1)
 twist = Twist(forward=0.5)
-rev = Reverse(10,30)
+rev = Reverse(30,60)
 ada_drive = AdaDrive()
 fpss = FPS(1.0)
 c_filter = Filter(filter_values[time_of_day])

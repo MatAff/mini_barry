@@ -2,14 +2,14 @@
 #!/usr/bin/env python3
 
 from color_filter import Filter, frame_to_line_pos
-from control import EngineeredControl
+from control import EngineeredControl, TestDrive
 from drive import AdaDrive
 from fps import FPS
 from visual import Camera, Display, Recorder
 
 KEY_ESC = 27
 
-fps = FPS(20.0)
+fps = FPS(1.0)
 
 camera = Camera()
 display = Display('robot', True)
@@ -18,7 +18,8 @@ recorder = Recorder('./robot.avi', 20, (320, 240), sparse=1)
 filter_dict = { 'blue': [[100,182,83],[107,255,241]] }
 filter = Filter(filter_dict['blue'])
 
-controller = EngineeredControl()
+# controller = EngineeredControl()
+controller = TestDrive()
 
 drive = AdaDrive()
 
@@ -39,7 +40,7 @@ while running:
     key = display.show(frame)
     running = (key != KEY_ESC)
     recorder.write(frame)
-    fps.get_fps()
+    fps.get_fps(True)
 
 camera.release()
 recorder.release()

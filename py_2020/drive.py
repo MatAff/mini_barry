@@ -29,10 +29,10 @@ class AdaDrive(object):
 
         # check input
         keys = list(act_dict.keys())
-        assert len(set(keys, ['forward', 'rotate'])) == len(keys), 'unknown keys present'
+        assert len(set(keys + ['forward', 'rotate'])) == len(keys), 'unknown keys present'
         
         # update
-        self.forward = act_dict.get('forward', self.forward)
+        self.forward = act_dict.get('forward', self.forward) * -1.0
         self.rotate = act_dict.get('rotate', self.rotate)
         
         self.act()
