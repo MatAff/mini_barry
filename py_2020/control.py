@@ -1,5 +1,6 @@
 
 import copy
+import matplotlib.pyplot as plt
 import numpy as np
 from queue import Queue
 import scipy.stats
@@ -27,7 +28,7 @@ class EngineeredControl(object):
 
     def decide(self, line_pos):
         try:
-            rotate = line_pos[3] * -0.45
+            rotate = line_pos[1] * -0.45
             return {'forward': 0.5, 'rotate': rotate}
         except TypeError as e:
             print(e)
@@ -87,14 +88,15 @@ class RL(object):
     @staticmethod
     def thread_train_model(X, y):
         model = NeuralNet()
-        model.create(X.shape, [20,20,5])
+        model.create(X.shape, [20, 20, 20, 20, 2])
+        print(X.shape)
         model.train(X, y)
         return model
 
     def create_model(self):
 
         # compute discounted rewards
-        self.discounted_rewards = RL.discount_rewards(self.reward)
+        self.discounted_rewards = RL.discount_rewards(self.reward, 0.5)
 
         # compile data
         X = np.append(self.state, self.action, axis=1)
@@ -113,18 +115,21 @@ class RL(object):
   
     def use_model(self, line_pos):
 
-        # mu = self.action.mean(axis=0)[1]
-        # sd = self.action.std(axis=0)[1]
+        mu = self.action.mean(axis=0)[1]
+        sd = self.action.std(axis=0)[1]
 
         line_pos = np.append(line_pos, [0.2])
-        rotate_range = np.arange(-0.05, 0.05, 0.01)
+        rotate_range = np.arange(-0.05, 0.05, 0.001)
         res = np.repeat([line_pos], len(rotate_range), axis=0)
         res = np.append(res, np.array([rotate_range]).T, axis=1)
 
         pred = self.model.predict(res)
-        # prob = scipy.stats.norm(mu, sd).pdf(rotate_range)
+        if np.random.rand() < 0.1:
+            plt.plot(pred)
+            plt.show()
+        prob = scipy.stats.norm(mu, sd).pdf(rotate_range)
 
-        props = pred # / prob
+        props = pred # / (prob**1/10)
 
         return rotate_range[np.argmin(props)]
 
@@ -133,7 +138,7 @@ class RL(object):
         reward = 0 
         for pos in range(len(line_pos)):
             if line_pos[pos] is None:
-                pos_reward = 10
+                pos_reward = 1
             else:
                 pos_reward = abs(line_pos[pos])
             reward += pos_reward**(1/(pos + 1))
@@ -152,11 +157,9 @@ class RL(object):
         if self.model is None:
             act_dict =  self.initial_controller.decide(retained_pos)
         else:
-            if np.random.rand() < (self.cycle / 3):
-                print('trying')
+            if np.random.rand() < (self.cycle / 10):
                 res = self.use_model(retained_pos)
-                print('working')
-                act_dict = {'forward': 0.2, 'rotate': res}
+                act_dict = {'forward': 0.5, 'rotate': res}
             else:
                 act_dict =  self.initial_controller.decide(retained_pos)
 

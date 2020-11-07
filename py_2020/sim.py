@@ -42,7 +42,7 @@ while running:
 
     # control
     act_dict = controller.decide(line_pos)
-    print(act_dict)
+    # print(act_dict)
     
     # act
     car.move(act_dict)    
@@ -55,11 +55,3 @@ while running:
 
 recorder.release()
 display.close()
-
-dir(controller.model)
-
-sample_data = np.array([1, 2, 3, 4, 5, 6, 7])
-sample_data.shape
-controller.model.predict(sample_data)
-
-type(controller.model)

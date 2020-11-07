@@ -35,7 +35,7 @@ class NeuralNet(object):
         model.compile(optimizer='rmsprop', loss='mse')
         self.model = model
 
-    def train(self, X, y, epochs=50, batch_size=256, verbose=0):
+    def train(self, X, y, epochs=150, batch_size=256, verbose=0):
         if len(X.shape) > 2 : X = flatten(X)
         self.history = self.model.fit(X, y, epochs=epochs, batch_size=batch_size, verbose=verbose)
 

@@ -87,8 +87,8 @@ class Course(object):
 
     def __init__(self):
         line_list = []
-        sections = [Line(np.array([0,0]), np.array([10,0])),
-                    Line(np.array([50,50]), np.array([40,65.])),
+        sections = [Line(np.array([0,0]), np.array([20,0])),
+                    Line(np.array([50,30]), np.array([40,65.])),
                     Line(np.array([-40,60]), np.array([-50,50]))]
 
         for i, sect in enumerate(sections):
