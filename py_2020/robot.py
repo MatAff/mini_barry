@@ -44,7 +44,7 @@ while running:
     key = display.show(masked_frame)
     running = (key != KEY_ESC)
     recorder.write(frame)
-    fps.get_fps(True)
+    fps.get_fps(verbose=False)
 
 camera.release()
 recorder.release()
