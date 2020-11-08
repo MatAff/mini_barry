@@ -18,8 +18,8 @@ recorder = Recorder('./robot.avi', 20, (320, 240), sparse=1)
 filter_dict = { 'blue': [[100,182,83],[107,255,241]] }
 filter = Filter(filter_dict['blue'])
 
-# controller = EngineeredControl()
-controller = TestDrive()
+controller = EngineeredControl()
+# controller = TestDrive()
 
 drive = AdaDrive()
 
@@ -35,6 +35,7 @@ while running:
 
     # act
     drive.set(act_dict)
+    print(act_dict)
 
     # feedback
     key = display.show(frame)

@@ -33,7 +33,7 @@ class AdaDrive(object):
         
         # update
         self.forward = act_dict.get('forward', self.forward) * -1.0
-        self.rotate = act_dict.get('rotate', self.rotate)
+        self.rotate = act_dict.get('rotate', self.rotate) * -1.0
         
         self.act()
 
