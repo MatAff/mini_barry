@@ -11,6 +11,7 @@ KEY_ESC = 27
 
 fps = FPS(1.0)
 
+# camera = Camera(filename='robot.avi')
 camera = Camera()
 display = Display('robot', True)
 recorder = Recorder('./robot.avi', 20, (320, 240), sparse=1)
@@ -18,8 +19,8 @@ recorder = Recorder('./robot.avi', 20, (320, 240), sparse=1)
 filter_dict = { 'blue': [[100,182,83],[107,255,241]] }
 filter = Filter(filter_dict['blue'])
 
-# controller = EngineeredControl()
-controller = TestDrive()
+controller = EngineeredControl()
+# controller = TestDrive()
 
 drive = AdaDrive()
 
@@ -28,16 +29,19 @@ while running:
     
     # input
     frame = camera.get()
-    line_pos = frame_to_line_pos(frame, filter)
+    line_pos, masked_frame = frame_to_line_pos(frame, filter)
+    print(line_pos)
     
     # control
     act_dict = controller.decide(line_pos)
 
     # act
     drive.set(act_dict)
+    print(act_dict)
 
     # feedback
-    key = display.show(frame)
+    # key = display.show(frame)
+    key = display.show(masked_frame)
     running = (key != KEY_ESC)
     recorder.write(frame)
     fps.get_fps(True)

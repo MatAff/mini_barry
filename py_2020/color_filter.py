@@ -21,15 +21,18 @@ class Filter(object):
 def frame_to_line_pos(frame, filter):
 
     # create small mask
-    frame_lower = frame[120:240, 0:320] # crop
-    mask_lower = filter.apply(frame_lower)
+    mask = filter.apply(frame)
+    mask_lower = mask[120:240, 0:320] # crop
     mask_lower_small = mask_lower.reshape(5, 24, 20, 16).mean(axis=(1,3)) # reduce size
+
+    # apply maxk
+    masked_frame = filter.apply_mask(frame, mask)
 
     # return max positions
     cols = mask_lower_small.shape[1]
     mask_lower_small[:,int(cols/2)] += 0.0001 # ensure middle is selected if missing
     max_pos = np.argmax(mask_lower_small, 1)
-    return max_pos / (cols - 1) * 2.0 - 1.0
+    return max_pos / (cols - 1) * 2.0 - 1.0, masked_frame
 
 
 class TestFrameToLinePos(unittest.TestCase):

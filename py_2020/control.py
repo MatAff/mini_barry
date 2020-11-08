@@ -28,7 +28,7 @@ class EngineeredControl(object):
 
     def decide(self, line_pos):
         try:
-            rotate = line_pos[1] * -0.45
+            rotate = line_pos[3] * -1.0
             return {'forward': 0.5, 'rotate': rotate}
         except TypeError as e:
             print(e)
@@ -47,7 +47,7 @@ class TestDrive(object):
         if self.count < 10:
             return {'forward': 0.6, 'rotate': 0.0}
         else:
-            return {'forward': 0.6, 'rotate': 0.2}
+            return {'forward': 0.6, 'rotate': 0.9}
     
 
 class RL(object):
