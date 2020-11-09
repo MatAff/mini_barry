@@ -23,8 +23,8 @@ filter_dict = {
 }
 filter = Filter(filter_dict['night_blue'])
 
-# controller = EngineeredControl()
-controller = TestDrive()
+controller = EngineeredControl()
+# controller = TestDrive()
 
 drive = AdaDrive()
 
@@ -32,6 +32,7 @@ drive = AdaDrive()
 # key = 0 
 
 running = True
+count = 0
 while running:
     
     # input
@@ -48,11 +49,12 @@ while running:
 
     # feedback
     # key = display.show(frame)
-    key = display.show(masked_frame)
+    if count == 0:
+        key = display.show(masked_frame)
+    count = (count + 1) % 10
     running = (key != KEY_ESC)
     recorder.write(frame)
     fps.get_fps(verbose=False)
-
     # # step through frames
     # if key == KEY_SPACE:
     #     frame = camera.get()
