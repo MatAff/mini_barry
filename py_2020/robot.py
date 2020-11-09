@@ -8,6 +8,7 @@ from fps import FPS
 from visual import Camera, Display, Recorder
 
 KEY_ESC = 27
+KEY_SPACE = 32 
 
 fps = FPS(1.0)
 
@@ -16,13 +17,19 @@ camera = Camera()
 display = Display('robot', True)
 recorder = Recorder('./robot.avi', 20, (320, 240), sparse=1)
 
-filter_dict = { 'blue': [[100,182,83],[107,255,241]] }
-filter = Filter(filter_dict['blue'])
+filter_dict = { 
+    'blue': [[100,182,83],[107,255,241]], 
+    'night_blue': [[89,163,118],[106,247,247]] 
+}
+filter = Filter(filter_dict['night_blue'])
 
-controller = EngineeredControl()
-# controller = TestDrive()
+# controller = EngineeredControl()
+controller = TestDrive()
 
 drive = AdaDrive()
+
+# frame = camera.get()
+# key = 0 
 
 running = True
 while running:
@@ -45,6 +52,10 @@ while running:
     running = (key != KEY_ESC)
     recorder.write(frame)
     fps.get_fps(verbose=False)
+
+    # # step through frames
+    # if key == KEY_SPACE:
+    #     frame = camera.get()
 
 camera.release()
 recorder.release()
