@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import unittest
 
+# from visual import Display
 
 class Filter(object):
 
@@ -23,7 +24,8 @@ def frame_to_line_pos(frame, filter):
     # create small mask
     mask = filter.apply(frame)
     mask_lower = mask[120:240, 0:320] # crop
-    mask_lower_small = mask_lower.reshape(5, 24, 20, 16).mean(axis=(1,3)) # reduce size
+    mask_lower_small = mask_lower.reshape(5, 24, 320, 1).mean(axis=(1,3)) # reduce size
+    print(mask_lower_small.shape)
 
     # apply maxk
     masked_frame = filter.apply_mask(frame, mask)
@@ -35,20 +37,49 @@ def frame_to_line_pos(frame, filter):
     return max_pos / (cols - 1) * 2.0 - 1.0, masked_frame
 
 
+def create_sample_frame(width, height, line_start, line_end, line_color):
+    frame = np.zeros((height, width,3), np.uint8)	
+    frame = cv2.line(frame, line_start, line_end, line_color, 5)
+    return frame
+
+
 class TestFrameToLinePos(unittest.TestCase):
+
 
     def test_frame_to_line_pos(self):
 
         # create filter
+        filter_dict = { 'blue': [[100,182,83],[107,255,241]] }
+        filter = Filter(filter_dict['blue'])
 
-        # create sample frame
+        for x, y in zip([0, 160, 320], [-1, 0, 1]):
 
-        # apply function
+            # create sample frame
+            bgr_frame = create_sample_frame(320, 240, (x,0), (x, 240), (237, 142, 17))
 
-        # check result
+            # apply filter
+            line_pos, masked_frame = frame_to_line_pos(bgr_frame, filter)
 
-        self.assertAlmostEqual(fps.fps, 20.0, delta=1.0)
+            # check result
+            print(line_pos)
+
+            # display.show(masked_frame)
+            # display = Display('robot', True)
+
+            self.assertListEqual(line_pos.round(1).tolist(), [y, y, y, y, y])
 
 
 if __name__ == '__main__':
     unittest.main()
+
+
+# filter_dict = { 'blue': [[100,182,83],[107,255,241]] }
+# filter = Filter(filter_dict['blue'])
+
+# bgr_frame = create_sample_frame(320, 240, (160,0), (160, 240), (237, 142, 17))
+# bgr_frame.shape
+
+# mask = filter.apply(bgr_frame)
+# mask.shape
+# mask.reshape(10, 24, 21, 16).mean(axis=(1, 3)).shape
+

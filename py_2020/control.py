@@ -28,7 +28,7 @@ class EngineeredControl(object):
 
     def decide(self, line_pos):
         try:
-            rotate = line_pos[4] * 3.0
+            rotate = line_pos[4] * -1.0
             return {'forward': 0.6, 'rotate': rotate}
         except TypeError as e:
             print(e)
@@ -36,6 +36,11 @@ class EngineeredControl(object):
 
 
 class TestDrive(object):
+    """class to test motor control
+
+    Expected behavior alternate between: going straight and turning
+    left.
+    """
 
     def __init__(self):
         self.count = 0
@@ -47,7 +52,7 @@ class TestDrive(object):
         if self.count < 10:
             return {'forward': 0.6, 'rotate': 0.0}
         else:
-            return {'forward': 0.6, 'rotate': 0.9}
+            return {'forward': 0.6, 'rotate': -1.0}
     
 
 class RL(object):
