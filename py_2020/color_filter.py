@@ -33,7 +33,7 @@ def frame_to_line_pos(frame, filter):
     # return max positions
     cols = mask_lower_small.shape[1]
     mask_lower_small[:,int(cols/2)] += 0.0001 # ensure middle is selected if missing
-    max_pos = np.argmax(mask_lower_small, 1)
+    max_pos = np.argmax(mask_lower_small, 1) # TODO: need to reverse this
     return max_pos / (cols - 1) * 2.0 - 1.0, masked_frame
 
 

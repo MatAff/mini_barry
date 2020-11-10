@@ -32,7 +32,7 @@ class Draw:
             s_pix = Draw.to_pixel(points[i+0,:])
             e_pix = Draw.to_pixel(points[i+1,:])
             try:
-                cv2.line(frame, s_pix, e_pix,color,2)
+                cv2.line(frame, s_pix, e_pix,color, 2)
             except Exception as e:
                 print(points)
                 print(s_pix, e_pix)
@@ -56,12 +56,14 @@ class Line(object):
         if denom != 0:
             s = np.cross(CA,AB) / denom
             i  = other.points[0,:] + s * CD
+            i = i.round(5)
             overlap = self.in_range(i) and other.in_range(i)
             return(i, True, overlap)
         else:
             return None, False, False
 
     def in_range(self, p):
+        # p = p.round(5)
         return(((self.points[0,:] <= p)==(p <= self.points[1,:])).all())
 
 
@@ -111,7 +113,7 @@ class Car(object):
 
     def move(self, act_dict):
         x = act_dict['forward']
-        rad = act_dict['rotate']
+        rad = act_dict['rotate'] * -1.0 * 0.1
         self.pos = self.pos + x * self.dir * 0.5
         self.dir = np.matmul(rotate(rad), self.dir)
         self.pos = self.pos + x * self.dir * 0.5
@@ -130,9 +132,10 @@ class Car(object):
         # create detection line
         sp = self.pos + np.matmul(rotate(math.pi *  0.25), self.dir * dist)
         ep = self.pos + np.matmul(rotate(math.pi * -0.25), self.dir * dist)
-        sp = np.squeeze(np.array(sp))
-        ep = np.squeeze(np.array(ep))
+        sp = np.squeeze(np.array(sp)).round(5)
+        ep = np.squeeze(np.array(ep)).round(5)
         detect_line = Line(sp, ep)
+        detect_line.points
 
         # draw detection line
         Draw.draw_line(frame, detect_line.points, (0,200,0))
@@ -147,3 +150,40 @@ class Car(object):
 
     def detect_list(self, points, frame):
         return([self.detect(points, frame, dist) for dist in self.dist_list])
+
+
+# c = Car([5])
+# self = c
+# dist = 10
+
+# cc = Course()
+# points = cc.points
+
+
+# sp = np.array([3.53553391, 3.53553391])
+# ep = np.array([3.53553391, -3.53553391])
+# a = Line(sp, ep)
+# b = Line((0.0,0.0), (20.0, 0.0))
+
+# a = detect_line
+
+# a.points
+# a.points[1, 0]
+
+
+# inters, has_intersect, overlap = a.intersect(b)
+# print(inters)
+# print(has_intersect)
+# print(overlap)
+# # pos = np.linalg.norm(inters - sp) / np.linalg.norm(ep - sp)
+
+# # pos
+
+# # a.in_range(inters) 
+# # a.points
+# # inters
+
+# # b.in_range(inters)
+
+# inters[0]
+# (((a.points[0,:] <= inters)==(inters <= a.points[1,:])).all())

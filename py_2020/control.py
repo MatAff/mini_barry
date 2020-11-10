@@ -28,7 +28,7 @@ class EngineeredControl(object):
 
     def decide(self, line_pos):
         try:
-            rotate = line_pos[4] * 2.0
+            rotate = line_pos[0] * 2.0
             return {'forward': 0.6, 'rotate': rotate}
         except TypeError as e:
             print(e)
