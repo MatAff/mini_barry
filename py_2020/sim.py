@@ -25,9 +25,9 @@ dist_list = [5, 10, 20, 40, 80]
 car = Car(dist_list)
 
 # initialize controller
-controller = EngineeredControl()
+# controller = EngineeredControl()
 # controller = TestDrive()
-# controller = RL(len(dist_list))
+controller = RL(len(dist_list))
 
 running = True
 while running:
@@ -39,11 +39,11 @@ while running:
 
     # input
     line_pos = car.detect_list(course.points, frame)
-    print(line_pos)
+    # print(line_pos)
 
     # control
     act_dict = controller.decide(line_pos)
-    print(act_dict)
+    # print(act_dict)
     
     # act
     car.move(act_dict)    
